@@ -10,10 +10,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
-import static jakarta.persistence.CascadeType.ALL;
 import static jakarta.persistence.FetchType.LAZY;
 import static jakarta.persistence.GenerationType.IDENTITY;
 import static lombok.AccessLevel.PROTECTED;
@@ -38,14 +35,8 @@ public class BusinessCard {
     private LocalDateTime modifiedDate;
 
     @OneToOne
-    @JoinColumn(name = "image_id")
+    @JoinColumn(name = "qrcode_id")
     private QRCode qrCode;
-
-    @OneToMany(mappedBy = "businessCard", cascade = ALL, orphanRemoval = true)
-    private List<BusinessCardContent> contents = new ArrayList<>();
-
-    @OneToMany(mappedBy = "businessCard", cascade = ALL)
-    private List<Image> images = new ArrayList<>();
 
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "category_id")
@@ -59,23 +50,6 @@ public class BusinessCard {
     public BusinessCard(Boolean isPublic, User user) {
         this.isPublic = isPublic;
         this.user = user;
-    }
-
-    public void addBusinessCardContent(BusinessCardContent businessCardContent) {
-        businessCardContent.setBusinessCard(this);
-        this.contents.add(businessCardContent);
-    }
-
-    public void addBusinessCardTag(Tag tag) {
-        BusinessCardTag businessCardTag = new BusinessCardTag();
-        businessCardTag.setBusinessCard(this);
-        businessCardTag.setTag(tag);
-    }
-
-    public void addImage(Image image, String s3FileName) {
-        image.setImageUrl(s3FileName);
-        image.setBusinessCard(this);
-        this.images.add(image);
     }
 
 }
