@@ -28,4 +28,9 @@ public class Tag {
     @LastModifiedDate
     private LocalDateTime modifiedDate;
 
+    public void addTag(BusinessCardTag businessCardTag, BusinessCard businessCard) {
+        businessCardTag.setTag(this);
+        businessCardTag.setBusinessCard(businessCard);
+    }
+
 }
