@@ -33,4 +33,9 @@ public class Image {
     @LastModifiedDate
     private LocalDateTime modifiedDate;
 
+    public void addBusinessCard(BusinessCard businessCard, String s3FileName) {
+        this.setImageUrl(s3FileName);
+        this.setBusinessCard(businessCard);
+    }
+
 }
