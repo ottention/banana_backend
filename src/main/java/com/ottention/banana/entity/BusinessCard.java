@@ -26,6 +26,7 @@ public class BusinessCard {
     private Long id;
 
     private Boolean isPublic; //공개 비공개
+    private Boolean isRepresent; //대표 명함
     private int likeCount; //좋아요 수
 
     @CreatedDate
