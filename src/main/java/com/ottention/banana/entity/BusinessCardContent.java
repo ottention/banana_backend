@@ -1,8 +1,7 @@
 package com.ottention.banana.entity;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -11,9 +10,11 @@ import java.time.LocalDateTime;
 
 import static jakarta.persistence.FetchType.LAZY;
 import static jakarta.persistence.GenerationType.IDENTITY;
+import static lombok.AccessLevel.PROTECTED;
 
 @Entity
 @Getter @Setter
+@NoArgsConstructor(access = PROTECTED)
 @EntityListeners(AuditingEntityListener.class)
 public class BusinessCardContent {
 
@@ -23,6 +24,8 @@ public class BusinessCardContent {
     private Long id;
 
     private String content;
+    private int xAxis;
+    private int yAxis;
 
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "card_id")
@@ -33,5 +36,16 @@ public class BusinessCardContent {
 
     @LastModifiedDate
     private LocalDateTime modifiedDate;
+
+    @Builder
+    public BusinessCardContent(String content, int xAxis, int yAxis) {
+        this.content = content;
+        this.xAxis = xAxis;
+        this.yAxis = yAxis;
+    }
+
+    public void addBusinessCard(BusinessCard businessCard) {
+        this.businessCard = businessCard;
+    }
 
 }
