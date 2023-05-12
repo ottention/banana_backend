@@ -15,7 +15,7 @@ import static jakarta.persistence.GenerationType.IDENTITY;
 import static lombok.AccessLevel.PROTECTED;
 
 @Entity
-@Getter @Setter
+@Getter
 @NoArgsConstructor(access = PROTECTED)
 @EntityListeners(AuditingEntityListener.class)
 public class QRCode {
@@ -39,7 +39,7 @@ public class QRCode {
     public QRCode(String businessCardAddress, byte[] qrCodeImage, BusinessCard businessCard) {
         this.businessCardAddress = businessCardAddress;
         this.qrCodeImage = qrCodeImage;
-        businessCard.setQrCode(this);
+        businessCard.createQrCode(this);
     }
 
 }

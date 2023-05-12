@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 import static jakarta.persistence.GenerationType.IDENTITY;
 
 @Entity
-@Getter @Setter
+@Getter
 @EntityListeners(AuditingEntityListener.class)
 public class Tag {
 
@@ -29,8 +29,8 @@ public class Tag {
     private LocalDateTime modifiedDate;
 
     public void addTag(BusinessCardTag businessCardTag, BusinessCard businessCard) {
-        businessCardTag.setTag(this);
-        businessCardTag.setBusinessCard(businessCard);
+        businessCardTag.createTag(this);
+        businessCardTag.createBusinessCard(businessCard);
     }
 
 }

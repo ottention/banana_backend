@@ -13,7 +13,7 @@ import static jakarta.persistence.FetchType.LAZY;
 import static jakarta.persistence.GenerationType.IDENTITY;
 
 @Entity
-@Getter @Setter
+@Getter
 @EntityListeners(AuditingEntityListener.class)
 public class Notice {
 
@@ -34,7 +34,7 @@ public class Notice {
     private User user;
 
     public void addUser(User user) {
-        this.setUser(user);
+        this.user = user;
     }
 
 }
