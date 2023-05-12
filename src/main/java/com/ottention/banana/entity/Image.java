@@ -13,7 +13,7 @@ import static jakarta.persistence.FetchType.LAZY;
 import static jakarta.persistence.GenerationType.IDENTITY;
 
 @Entity
-@Getter @Setter
+@Getter
 @EntityListeners(AuditingEntityListener.class)
 public class Image {
 
@@ -34,8 +34,8 @@ public class Image {
     private LocalDateTime modifiedDate;
 
     public void addBusinessCard(BusinessCard businessCard, String s3FileName) {
-        this.setImageUrl(s3FileName);
-        this.setBusinessCard(businessCard);
+        this.imageUrl = s3FileName;
+        this.businessCard = businessCard;
     }
 
 }

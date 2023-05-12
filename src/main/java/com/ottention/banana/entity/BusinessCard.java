@@ -16,7 +16,7 @@ import static jakarta.persistence.GenerationType.IDENTITY;
 import static lombok.AccessLevel.PROTECTED;
 
 @Entity
-@Getter @Setter
+@Getter
 @NoArgsConstructor(access = PROTECTED)
 @EntityListeners(AuditingEntityListener.class)
 public class BusinessCard {
@@ -53,4 +53,11 @@ public class BusinessCard {
         this.user = user;
     }
 
+    public void createQrCode(QRCode qrCode) {
+        this.qrCode = qrCode;
+    }
+
+    public void updateLikeCount(int i) {
+        this.likeCount = i;
+    }
 }

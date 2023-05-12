@@ -47,7 +47,7 @@ public class BusinessCardLike {
             throw new IllegalArgumentException("좋아요는 한 번만 누를 수 있습니다.");
         }
         //좋아요 카운트 증가
-        businessCard.setLikeCount(businessCard.getLikeCount() + 1);
+        businessCard.updateLikeCount(businessCard.getLikeCount() + 1);
         this.businessCard = businessCard;
         this.user = user;
     }

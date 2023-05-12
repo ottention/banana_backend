@@ -13,7 +13,7 @@ import static jakarta.persistence.FetchType.LAZY;
 import static jakarta.persistence.GenerationType.IDENTITY;
 
 @Entity
-@Getter @Setter
+@Getter
 @EntityListeners(AuditingEntityListener.class)
 public class BusinessCardTag {
 
@@ -35,4 +35,11 @@ public class BusinessCardTag {
     @LastModifiedDate
     private LocalDateTime modifiedDate;
 
+    public void createTag(Tag tag) {
+        this.tag = tag;
+    }
+
+    public void createBusinessCard(BusinessCard businessCard) {
+        this.businessCard = businessCard;
+    }
 }
