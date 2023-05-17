@@ -19,7 +19,6 @@ public class JwtService {
     private static final long ACCESS_TOKEN_EXPIRE_TIME = 1000L * 60L * 60L * 24L * 7L; // 액세스 토큰의 만료 시간: 7일
     private static final long REFRESH_TOKEN_EXPIRE_TIME = 1000L * 60L * 60L * 24L * 30L; // 리프레시 토큰의 만료 시간: 30일
 
-
     public String generateAccessToken(Long userId) {
         SecretKey key = getSecretKey();
 
