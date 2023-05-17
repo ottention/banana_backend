@@ -12,7 +12,6 @@ public class KakaoAuthService {
     private final KakaoAuthApi kakaoAuthApi;
 
     public GetMemberInfoResponse getMemberInfo(String accessToken){
-        GetMemberInfoResponse memberInfo = kakaoAuthApi.getMemberInfo(accessToken);
-        return memberInfo;
+        return kakaoAuthApi.getMemberInfo(accessToken);
     }
 }
