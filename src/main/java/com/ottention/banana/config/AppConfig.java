@@ -11,9 +11,17 @@ import static org.springframework.http.MediaType.APPLICATION_FORM_URLENCODED_VAL
 public class AppConfig {
 
     @Bean
-    public WebClient serviceApi() {
+    public WebClient kakao() {
         return WebClient.builder()
                 .baseUrl("https://kapi.kakao.com")
+                .defaultHeader(CONTENT_TYPE, APPLICATION_FORM_URLENCODED_VALUE)
+                .build();
+    }
+
+    @Bean
+    public WebClient google() {
+        return WebClient.builder()
+                .baseUrl("https://oauth2.googleapis.com")
                 .defaultHeader(CONTENT_TYPE, APPLICATION_FORM_URLENCODED_VALUE)
                 .build();
     }
