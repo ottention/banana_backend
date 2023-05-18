@@ -27,6 +27,10 @@ public class Tag {
     @LastModifiedDate
     private LocalDateTime modifiedDate;
 
+    public void updateName(String name) {
+        this.name = name;
+    }
+
     public void addTag(BusinessCardTag businessCardTag, BusinessCard businessCard) {
         businessCardTag.createTag(this);
         businessCardTag.createBusinessCard(businessCard);
