@@ -60,9 +60,11 @@ public class QRCodeService {
         qrCodeRepository.save(qrCode);
     }
 
-    public byte[] getQrCodeImageById(Long id) {
-        QRCode qrCode = qrCodeRepository.findById(id)
-                .orElseThrow(QRCodeNotFound::new);
+    public byte[] getQrCodeImageById(Long businessCardId) {
+        BusinessCard businessCard = businessCardRepository.findById(businessCardId)
+                .orElseThrow();
+
+        QRCode qrCode = businessCard.getQrCode();
 
         return qrCode.getQrCodeImage();
     }
