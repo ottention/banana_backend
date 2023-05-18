@@ -1,6 +1,6 @@
 package com.ottention.banana.api;
 
-import com.ottention.banana.config.AppConfig;
+import com.ottention.banana.config.SocialLoginConfig;
 import com.ottention.banana.response.kakao.GetMemberInfoResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,10 +14,10 @@ import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 @RequiredArgsConstructor
 public class KakaoAuthApi {
 
-    private final AppConfig appConfig;
+    private final SocialLoginConfig socialLoginConfig;
 
     public GetMemberInfoResponse getMemberInfo(String accessToken) {
-        return appConfig.kakao().get()
+        return socialLoginConfig.kakao().get()
                 .uri("/v2/user/me")
                 .header("Authorization", "Bearer " + accessToken)
                 .retrieve()
