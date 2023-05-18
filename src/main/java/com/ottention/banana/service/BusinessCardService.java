@@ -6,6 +6,7 @@ import com.ottention.banana.config.S3Config;
 import com.ottention.banana.entity.*;
 import com.ottention.banana.exception.BusinessCardNotFound;
 import com.ottention.banana.exception.FileUploadException;
+import com.ottention.banana.exception.UserNotFound;
 import com.ottention.banana.repository.*;
 import com.ottention.banana.request.LoginUser;
 import com.ottention.banana.request.SaveBusinessCardRequest;
@@ -41,7 +42,7 @@ public class BusinessCardService {
     @Transactional
     public Long save(LoginUser user, SaveBusinessCardRequest request, List<MultipartFile> files) {
         User findUser = userRepository.findById(user.getId())
-                .orElseThrow();
+                .orElseThrow(UserNotFound::new);
 
         BusinessCard businessCard = BusinessCard.builder()
                 .isPublic(request.getIsPublic())
