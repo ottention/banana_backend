@@ -8,7 +8,7 @@ import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 import static org.springframework.http.MediaType.APPLICATION_FORM_URLENCODED_VALUE;
 
 @Configuration
-public class AppConfig {
+public class SocialLoginConfig {
 
     @Bean
     public WebClient kakao() {
