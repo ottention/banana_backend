@@ -3,7 +3,7 @@ package com.ottention.banana.controller;
 import com.ottention.banana.config.Login;
 import com.ottention.banana.request.LoginUser;
 import com.ottention.banana.request.SaveBusinessCardRequest;
-import com.ottention.banana.response.BusinessCardResponse;
+import com.ottention.banana.response.businesscard.BusinessCardResponse;
 import com.ottention.banana.service.BusinessCardService;
 import com.ottention.banana.service.QRCodeService;
 import lombok.RequiredArgsConstructor;
