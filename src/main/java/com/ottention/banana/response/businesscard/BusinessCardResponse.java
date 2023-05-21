@@ -1,4 +1,4 @@
-package com.ottention.banana.response;
+package com.ottention.banana.response.businesscard;
 
 import com.ottention.banana.entity.BusinessCardContent;
 import com.ottention.banana.entity.BusinessCardTag;

@@ -1,4 +1,6 @@
-package com.ottention.banana.exception;
+package com.ottention.banana.exception.qrcode;
+
+import com.ottention.banana.exception.Exception;
 
 public class QRCodeNotFound extends Exception {
 
