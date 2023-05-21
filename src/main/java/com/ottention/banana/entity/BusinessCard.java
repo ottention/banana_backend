@@ -38,10 +38,6 @@ public class BusinessCard {
     @JoinColumn(name = "qrcode_id")
     private QRCode qrCode;
 
-    @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "category_id")
-    private Category category;
-
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
