@@ -1,5 +1,6 @@
 package com.ottention.banana.config;
 
+import com.ottention.banana.exception.jwt.Unauthorized;
 import com.ottention.banana.request.LoginUser;
 import com.ottention.banana.service.JwtService;
 import io.jsonwebtoken.JwtException;
@@ -28,24 +29,15 @@ public class Config implements HandlerMethodArgumentResolver {
     @Override
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
         log.info("resolveArgument 실행");
-        String jws = webRequest.getHeader("Authorization");
-        jwtService.validateAccessToken(jws);
-
-        String refreshToken = webRequest.getHeader("RefreshToken");
-        jwtService.validateRefreshToken(refreshToken);
+        String accessToken = webRequest.getHeader("Authorization");
+        jwtService.validateAccessToken(accessToken);
 
         try {
-            Long id = jwtService.getSubject(jws);
-            log.info("id = {}", id);
-            return new LoginUser(id);
+            Long userId = jwtService.getSubject(accessToken);
+            log.info("userId = {}", userId);
+            return new LoginUser(userId);
         } catch (JwtException e) {
-            try {
-                Long id = jwtService.getSubject(refreshToken);
-                LoginUser loginUser = new LoginUser(id);
-                return loginUser;
-            } catch (JwtException ex) {
-                throw new IllegalArgumentException();
-            }
+            throw new Unauthorized();
         }
 
     }
