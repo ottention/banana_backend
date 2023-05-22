@@ -26,6 +26,7 @@ public class BusinessCardContent {
     private String content;
     private int xAxis;
     private int yAxis;
+    private boolean isFront;
 
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "card_id")
@@ -38,10 +39,11 @@ public class BusinessCardContent {
     private LocalDateTime modifiedDate;
 
     @Builder
-    public BusinessCardContent(String content, int xAxis, int yAxis) {
+    public BusinessCardContent(String content, int xAxis, int yAxis, boolean isFront) {
         this.content = content;
         this.xAxis = xAxis;
         this.yAxis = yAxis;
+        this.isFront = isFront;
     }
 
     public void addBusinessCard(BusinessCard businessCard) {
