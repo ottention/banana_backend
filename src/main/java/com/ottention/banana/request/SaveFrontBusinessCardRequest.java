@@ -7,7 +7,7 @@ import lombok.Setter;
 import java.util.List;
 
 @Getter @Setter
-public class SaveBusinessCardRequest {
+public class SaveFrontBusinessCardRequest {
 
     private Boolean isPublic;
     private List<ContentResponse> contents;
