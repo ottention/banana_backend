@@ -42,4 +42,13 @@ public class StoredBusinessCard {
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "user_id")
     private User user;  //명함 저장한 사람
+
+    public StoredBusinessCard(String name, Boolean isBookmarked, BusinessCard businessCard, Category category, User user) {
+        this.name = name;
+        this.isBookmarked = isBookmarked;
+        this.businessCard = businessCard;
+        this.category = category;
+        this.user = user;
+    }
+
 }
