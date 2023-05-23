@@ -6,5 +6,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface BusinessCardContentRepository extends JpaRepository<BusinessCardContent, Long> {
-    List<BusinessCardContent> findByBusinessCardId(Long id);
+    List<BusinessCardContent> findByBusinessCardIdAndIsFront(Long id, boolean isFront);
 }
