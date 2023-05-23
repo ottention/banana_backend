@@ -14,25 +14,20 @@ public class BusinessCardResponse {
 
     private final List<ContentResponse> contents;
     private final List<ImageResponse> images;
-    private final List<TagResponse> tags;
 
-    public static BusinessCardResponse toBusinessCard(List<BusinessCardContent> businessCardContents, List<String> imageUrls,
-                                                      List<BusinessCardTag> tags) {
+    public static BusinessCardResponse toBusinessCard(List<BusinessCardContent> businessCardContents, List<String> imageUrls) {
         return BusinessCardResponse.builder()
                 .contents(businessCardContents.stream().map(c ->
-                        ContentResponse.toContent(c.getContent(), c.getXAxis(), c.getYAxis()))
+                        ContentResponse.toContent(c.getContent(), c.getWidth(), c.getWidth(), c.getXAxis(), c.getYAxis()))
                         .collect(toList()))
                 .images(imageUrls.stream().map(i -> new ImageResponse(i))
-                        .collect(toList()))
-                .tags(tags.stream().map(t -> new TagResponse(t.getTag().getName()))
                         .collect(toList()))
                 .build();
     }
 
     @Builder
-    public BusinessCardResponse(List<ContentResponse> contents, List<ImageResponse> images, List<TagResponse> tags) {
+    public BusinessCardResponse(List<ContentResponse> contents, List<ImageResponse> images) {
         this.contents = contents;
         this.images = images;
-        this.tags = tags;
     }
 }
