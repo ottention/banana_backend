@@ -8,8 +8,9 @@ import com.ottention.banana.exception.BusinessCardNotFound;
 import com.ottention.banana.exception.FileUploadException;
 import com.ottention.banana.exception.UserNotFound;
 import com.ottention.banana.repository.*;
-import com.ottention.banana.request.LoginUser;
-import com.ottention.banana.request.SaveBusinessCardRequest;
+import com.ottention.banana.request.SaveBackBusinessCardRequest;
+import com.ottention.banana.request.SaveFrontBusinessCardRequest;
+import com.ottention.banana.request.SaveTagRequest;
 import com.ottention.banana.response.businesscard.BusinessCardResponse;
 import com.ottention.banana.response.businesscard.ContentResponse;
 import lombok.RequiredArgsConstructor;
@@ -39,38 +40,63 @@ public class BusinessCardService {
     private final AmazonS3Client amazonS3;
     private final S3Config s3Config;
 
+    /**
+     * 명함 저장
+     * @param userId : 회원 id
+     * @param frontRequest : 명함 앞면
+     * @param backRequest : 명함 뒷면
+     * @param files : 사진
+     */
     @Transactional
-    public Long save(LoginUser user, SaveBusinessCardRequest request, List<MultipartFile> files) {
-        User findUser = userRepository.findById(user.getId())
+    public Long save(Long userId, SaveFrontBusinessCardRequest frontRequest, SaveBackBusinessCardRequest backRequest,
+                     List<MultipartFile> files) {
+        User findUser = userRepository.findById(userId)
                 .orElseThrow(UserNotFound::new);
 
         BusinessCard businessCard = BusinessCard.builder()
-                .isPublic(request.getIsPublic())
+                .isPublic(frontRequest.getIsPublic())
+                .isRepresent(frontRequest.getIsPresent())
                 .user(findUser)
                 .build();
 
-        saveBusinessCardContents(request, businessCard);
-        saveImages(files, businessCard);
-        saveTags(request, businessCard);
+        saveBusinessCardContents(frontRequest, backRequest, businessCard);
+        saveBusinessCardImages(files, businessCard);
 
         return businessCardRepository.save(businessCard).getId();
     }
 
-    private void saveBusinessCardContents(SaveBusinessCardRequest request, BusinessCard businessCard) {
-        List<ContentResponse> contents = request.getContents();
+    /**
+     * 명함 앞, 뒤 둘 중 하나에만 데이터를 저장하고 싶어할 수도 있음 -> null 체크 후 저장
+     */
+    private void saveBusinessCardContents(SaveFrontBusinessCardRequest frontRequest,
+                                          SaveBackBusinessCardRequest backRequest, BusinessCard businessCard) {
+        if (frontRequest != null) {
+            saveContents(frontRequest.getContents(), true, businessCard);
+        }
+
+        if (backRequest != null) {
+            saveContents(backRequest.getContents(), false, businessCard);
+        }
+    }
+
+    /**
+     * @param contents : 명함 내용 관련 정보들 (명함 내용, 가로, 세로 x, y 축)
+     * @param isFront : 명함 앞 뒤 구분 true면 앞 false면 뒤
+     */
+    private void saveContents(List<ContentResponse> contents, boolean isFront, BusinessCard businessCard) {
         for (ContentResponse content : contents) {
-            BusinessCardContent businessCardContent = BusinessCardContent.builder()
-                    .content(content.getContent())
-                    .xAxis(content.getxAxis())
-                    .yAxis(content.getyAxis())
-                    .build();
+            BusinessCardContent businessCardContent = BusinessCardContent.createBusinessCardContent(content.getContent(),
+                    content.getWidth(), content.getHeight(), content.getxAxis(), content.getyAxis(), isFront);
 
             businessCardContent.addBusinessCard(businessCard);
             businessCardContentRepository.save(businessCardContent);
         }
     }
 
-    private void saveTags(SaveBusinessCardRequest request, BusinessCard businessCard) {
+    /**
+     * 태그 저장
+     */
+    private void saveTags(SaveTagRequest request, BusinessCard businessCard) {
         List<String> tags = request.getTags();
         for (String tag : tags) {
             BusinessCardTag businessCardTag = new BusinessCardTag();
@@ -84,36 +110,102 @@ public class BusinessCardService {
         }
     }
 
-    private void saveImages(List<MultipartFile> files, BusinessCard businessCard) {
-        for (MultipartFile file : files) {
-            String s3FileName = randomUUID() + "-" + file.getOriginalFilename();
-            try {
-                ObjectMetadata objMeta = new ObjectMetadata();
-                objMeta.setContentLength(file.getInputStream().available());
+    /**
+     * 이미지 저장
+     * @param files : 이미지
+     */
+    private void saveBusinessCardImages(List<MultipartFile> files, BusinessCard businessCard) {
+        saveImages(files, businessCard, true);
+        saveImages(files, businessCard, false);
+    }
 
-                amazonS3.putObject(s3Config.getBucket(), s3FileName, file.getInputStream(), objMeta);
-
-                Image image = new Image();
-                image.addBusinessCard(businessCard, s3FileName);
-                imageRepository.save(image);
-            } catch (IOException e) {
-                throw new FileUploadException();
+    /**
+     * AWS S3에 업로드
+     * @param files
+     * @param businessCard
+     * @param isFront
+     */
+    private void saveImages(List<MultipartFile> files, BusinessCard businessCard, boolean isFront) {
+        if (files != null) {
+            for (MultipartFile file : files) {
+                String s3FileName = generateS3FileName(file);
+                try {
+                    uploadFileToS3(file, s3FileName);
+                    saveImage(businessCard, isFront, s3FileName);
+                } catch (IOException e) {
+                    throw new FileUploadException();
+                }
             }
         }
     }
 
-    public BusinessCardResponse getBusinessCard(Long id) {
-        BusinessCard businessCard = businessCardRepository.findById(id)
-                .orElseThrow(BusinessCardNotFound::new);
-
-        List<Image> images = imageRepository.findByBusinessCardId(businessCard.getId());
-        List<String> imageUrls = getImageUrls(images);
-        List<BusinessCardContent> contents = businessCardContentRepository.findByBusinessCardId(businessCard.getId());
-        List<BusinessCardTag> businessCardTags = businessCardTagRepository.findByBusinessCardId(businessCard.getId());
-
-        return BusinessCardResponse.toBusinessCard(contents, imageUrls, businessCardTags);
+    /**
+     * 이미지 파일 이름 생성
+     */
+    private String generateS3FileName(MultipartFile file) {
+        return randomUUID() + "-" + file.getOriginalFilename();
     }
 
+    /**
+     * 이미지 저장
+     */
+    private void saveImage(BusinessCard businessCard, boolean isFront, String s3FileName) {
+        Image image = Image.createImage(s3FileName, isFront, businessCard);
+        imageRepository.save(image);
+    }
+
+    /**
+     * S3 업로드
+     * @param file : 이미지 파일
+     * @param s3FileName : 이미지 파일 이름
+     */
+    private void uploadFileToS3(MultipartFile file, String s3FileName) throws IOException {
+        ObjectMetadata objMeta = new ObjectMetadata();
+        objMeta.setContentLength(file.getInputStream().available());
+        amazonS3.putObject(s3Config.getBucket(), s3FileName, file.getInputStream(), objMeta);
+    }
+
+    /**
+     * 명함 앞 데이터 가져오기
+     */
+    public BusinessCardResponse getFrontBusinessCard(Long id) {
+        return getBusinessCardResponse(id, true);
+    }
+
+    /**
+     * 명함 뒤 데이터 가져오기
+     */
+    public BusinessCardResponse getBackBusinessCard(Long id) {
+        return getBusinessCardResponse(id, false);
+    }
+
+    /**
+     * 명함 데이터 가져오기
+     * @param id : 어떤 명함 데이터 가져올건지
+     * @param isFront : 앞 뒤 구분을 위한 파라미터
+     * @return
+     */
+    private BusinessCardResponse getBusinessCardResponse(Long id, boolean isFront) {
+        BusinessCard businessCard = getBusinessCard(id);
+
+        List<Image> images = imageRepository.findByBusinessCardIdAndIsFront(businessCard.getId(), isFront);
+        List<String> imageUrls = getImageUrls(images);
+        List<BusinessCardContent> contents = businessCardContentRepository.findByBusinessCardIdAndIsFront(businessCard.getId(), isFront);
+
+        return BusinessCardResponse.toBusinessCard(contents, imageUrls);
+    }
+
+    /**
+     * 명함 가져오기
+     */
+    private BusinessCard getBusinessCard(Long id) {
+        return businessCardRepository.findById(id)
+                .orElseThrow(BusinessCardNotFound::new);
+    }
+
+    /**
+     * 이미지 URL 가져오는 메서드
+     */
     private List<String> getImageUrls(List<Image> images) {
         List<String> urls = new ArrayList<>();
 
