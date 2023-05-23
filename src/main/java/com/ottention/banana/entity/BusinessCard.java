@@ -43,8 +43,9 @@ public class BusinessCard {
     private User user;
 
     @Builder
-    public BusinessCard(Boolean isPublic, User user) {
+    public BusinessCard(Boolean isPublic, Boolean isRepresent, User user) {
         this.isPublic = isPublic;
+        this.isRepresent = isRepresent;
         this.user = user;
     }
 
