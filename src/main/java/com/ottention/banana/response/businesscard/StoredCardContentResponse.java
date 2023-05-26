@@ -1,7 +1,6 @@
 package com.ottention.banana.response.businesscard;
 
 import com.ottention.banana.entity.BusinessCardContent;
-import com.ottention.banana.entity.StoredBusinessCard;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,6 +14,7 @@ public class StoredCardContentResponse {
     private int xAxis;
     private int yAxis;
     private Long bid;  //businesscard id
+
 
     //Entity -> Dto
     public StoredCardContentResponse(BusinessCardContent businessCardContent) {
