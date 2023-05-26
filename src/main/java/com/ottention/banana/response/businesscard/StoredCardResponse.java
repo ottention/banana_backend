@@ -14,12 +14,13 @@ public class StoredCardResponse {
     private Boolean isBookmarked;
     private Long cid;  //businesscard id
 
-    private List<StoredCardContentResponse> storedCardContents;
+    private List<StoredCardContentResponse> cardContentResponses;
 
     //Entity -> Dto
-    public StoredCardResponse(StoredBusinessCard storedBusinessCard) {
+    public StoredCardResponse(StoredBusinessCard storedBusinessCard, List<StoredCardContentResponse> cardContentResponses) {
         this.name = storedBusinessCard.getName();
         this.isBookmarked = storedBusinessCard.getIsBookmarked();
         this.cid = storedBusinessCard.getBusinessCard().getId();
+        this.cardContentResponses = cardContentResponses;
     }
 }
