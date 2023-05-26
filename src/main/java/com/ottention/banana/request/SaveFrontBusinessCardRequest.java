@@ -10,7 +10,7 @@ import java.util.List;
 public class SaveFrontBusinessCardRequest {
 
     private Boolean isPublic;
+    private Boolean isPresent;
     private List<ContentResponse> contents;
-    private List<String> tags;
 
 }
