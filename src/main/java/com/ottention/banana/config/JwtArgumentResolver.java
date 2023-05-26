@@ -14,7 +14,7 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 
 @Slf4j
 @RequiredArgsConstructor
-public class Config implements HandlerMethodArgumentResolver {
+public class JwtArgumentResolver implements HandlerMethodArgumentResolver {
 
     private final JwtService jwtService;
 
