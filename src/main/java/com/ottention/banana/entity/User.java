@@ -1,18 +1,17 @@
 package com.ottention.banana.entity;
 
 import jakarta.persistence.*;
-import lombok.*;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import static lombok.AccessLevel.PROTECTED;
 
 @Entity
 @Getter
 @Table(name = "users")
-@EntityListeners(AuditingEntityListener.class)
 @NoArgsConstructor(access = PROTECTED)
-public class User {
+public class User extends BaseEntity {
 
     @Id
     @GeneratedValue
