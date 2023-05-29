@@ -1,13 +1,11 @@
 package com.ottention.banana.entity;
 
 import jakarta.persistence.*;
-import lombok.*;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
-
+import static jakarta.persistence.EnumType.STRING;
 import static jakarta.persistence.FetchType.LAZY;
 import static jakarta.persistence.GenerationType.IDENTITY;
 import static lombok.AccessLevel.PROTECTED;
@@ -15,36 +13,30 @@ import static lombok.AccessLevel.PROTECTED;
 @Entity
 @Getter
 @NoArgsConstructor(access = PROTECTED)
-@EntityListeners(AuditingEntityListener.class)
-public class BusinessCardContent {
+public class BusinessCardContent extends BaseEntity {
 
     @Id @GeneratedValue(strategy = IDENTITY)
     @Column(name = "content_id")
     private Long id;
 
     private String content;
-    private int width;
-    private int height;
+
+    @Enumerated(STRING)
+    private ContentSize contentSize;
+
     private int xAxis;
     private int yAxis;
     private boolean isFront;
 
     @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "card_id")
+    @JoinColumn(name = "business_card_id")
     private BusinessCard businessCard;
 
-    @CreatedDate
-    private LocalDateTime createdDate;
-
-    @LastModifiedDate
-    private LocalDateTime modifiedDate;
-
-    public static BusinessCardContent createBusinessCardContent(String content, int width, int height,
+    public static BusinessCardContent createBusinessCardContent(String content, ContentSize contentSize,
                                                                 int xAxis, int yAxis, boolean isFront) {
         return BusinessCardContent.builder()
                 .content(content)
-                .width(width)
-                .height(height)
+                .contentSize(contentSize)
                 .xAxis(xAxis)
                 .yAxis(yAxis)
                 .isFront(isFront)
@@ -52,10 +44,9 @@ public class BusinessCardContent {
     }
 
     @Builder
-    public BusinessCardContent(String content, int width, int height, int xAxis, int yAxis, boolean isFront) {
+    public BusinessCardContent(String content, ContentSize contentSize, int xAxis, int yAxis, boolean isFront) {
         this.content = content;
-        this.width = width;
-        this.height = height;
+        this.contentSize = contentSize;
         this.xAxis = xAxis;
         this.yAxis = yAxis;
         this.isFront = isFront;
