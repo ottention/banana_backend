@@ -80,13 +80,15 @@ public class BusinessCardService {
     }
 
     /**
-     * @param contents : 명함 내용 관련 정보들 (명함 내용, 가로, 세로 x, y 축)
+     * @param contents : 명함 내용 관련 정보들 (명함 내용, 텍스트 박스 크기, x, y 축)
      * @param isFront : 명함 앞 뒤 구분 true면 앞 false면 뒤
      */
     private void saveContents(List<ContentResponse> contents, boolean isFront, BusinessCard businessCard) {
         for (ContentResponse content : contents) {
+            ContentSize contentSize = ContentSize.fromString(content.getContentSize());
+
             BusinessCardContent businessCardContent = BusinessCardContent.createBusinessCardContent(content.getContent(),
-                    content.getWidth(), content.getHeight(), content.getxAxis(), content.getyAxis(), isFront);
+                    contentSize, content.getxAxis(), content.getyAxis(), isFront);
 
             businessCardContent.addBusinessCard(businessCard);
             businessCardContentRepository.save(businessCardContent);

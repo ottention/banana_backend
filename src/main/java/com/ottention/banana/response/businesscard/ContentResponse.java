@@ -1,5 +1,6 @@
 package com.ottention.banana.response.businesscard;
 
+import com.ottention.banana.entity.ContentSize;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
 
@@ -7,26 +8,23 @@ import lombok.NoArgsConstructor;
 public class ContentResponse {
 
     private String content;
-    private int width;
-    private int height;
+    private String contentSize;
     private int xAxis;
     private int yAxis;
 
-    public static ContentResponse toContent(String content, int width, int height, int xAxis, int yAxis) {
+    public static ContentResponse toContent(String content, ContentSize contentSize, int xAxis, int yAxis) {
         return ContentResponse.builder()
                 .content(content)
-                .width(width)
-                .height(height)
+                .contentSize(contentSize.getSize())
                 .xAxis(xAxis)
                 .yAxis(yAxis)
                 .build();
     }
 
     @Builder
-    public ContentResponse(String content, int width, int height, int xAxis, int yAxis) {
+    public ContentResponse(String content, String contentSize, int xAxis, int yAxis) {
         this.content = content;
-        this.width = width;
-        this.height = height;
+        this.contentSize = contentSize;
         this.xAxis = xAxis;
         this.yAxis = yAxis;
     }
@@ -35,12 +33,8 @@ public class ContentResponse {
         return content;
     }
 
-    public int getWidth() {
-        return width;
-    }
-
-    public int getHeight() {
-        return height;
+    public String getContentSize() {
+        return contentSize;
     }
 
     public int getxAxis() {

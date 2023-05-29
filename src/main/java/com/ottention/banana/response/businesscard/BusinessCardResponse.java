@@ -18,7 +18,7 @@ public class BusinessCardResponse {
     public static BusinessCardResponse toBusinessCard(List<BusinessCardContent> businessCardContents, List<String> imageUrls) {
         return BusinessCardResponse.builder()
                 .contents(businessCardContents.stream().map(c ->
-                        ContentResponse.toContent(c.getContent(), c.getWidth(), c.getWidth(), c.getXAxis(), c.getYAxis()))
+                        ContentResponse.toContent(c.getContent(), c.getContentSize(), c.getXAxis(), c.getYAxis()))
                         .collect(toList()))
                 .images(imageUrls.stream().map(i -> new ImageResponse(i))
                         .collect(toList()))
