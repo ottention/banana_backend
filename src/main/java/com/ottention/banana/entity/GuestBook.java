@@ -4,11 +4,6 @@ import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-
-import java.time.LocalDateTime;
 
 import static jakarta.persistence.FetchType.LAZY;
 import static jakarta.persistence.GenerationType.IDENTITY;
@@ -17,11 +12,10 @@ import static lombok.AccessLevel.PROTECTED;
 @Entity
 @Getter
 @NoArgsConstructor(access = PROTECTED)
-@EntityListeners(AuditingEntityListener.class)
-public class GuestBook {
+public class GuestBook extends BaseEntity {
 
     @Id @GeneratedValue(strategy = IDENTITY)
-    @Column(name = "guestBook_id")
+    @Column(name = "guest_book_id")
     private Long id;
 
     private String writer; //방명록 작성자
@@ -35,12 +29,6 @@ public class GuestBook {
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "user_id")
     private User user;
-
-    @CreatedDate
-    private LocalDateTime createdDate;
-
-    @LastModifiedDate
-    private LocalDateTime modifiedDate;
 
     @Builder
     public GuestBook(String writer, String content, Boolean guestBookLike, BusinessCard businessCard, User user) {
