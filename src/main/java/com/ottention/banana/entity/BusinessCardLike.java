@@ -4,11 +4,7 @@ import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import java.time.LocalDateTime;
 import java.util.Optional;
 
 import static jakarta.persistence.FetchType.LAZY;
@@ -18,27 +14,20 @@ import static lombok.AccessLevel.PROTECTED;
 @Entity
 @Getter
 @NoArgsConstructor(access = PROTECTED)
-@EntityListeners(AuditingEntityListener.class)
-public class BusinessCardLike {
+public class BusinessCardLike extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = IDENTITY)
-    @Column(name = "businessCardLike_id")
+    @Column(name = "business_card_like_id")
     private Long id;
 
     @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "card_id")
+    @JoinColumn(name = "business_card_id")
     private BusinessCard businessCard;
 
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "user_id")
     private User user;
-
-    @CreatedDate
-    private LocalDateTime createdDate;
-
-    @LastModifiedDate
-    private LocalDateTime modifiedDate;
 
     @Builder
     public BusinessCardLike(BusinessCard businessCard, User user, Optional<BusinessCardLike> like) {
