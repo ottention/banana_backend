@@ -2,19 +2,16 @@ package com.ottention.banana.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-
-import java.time.LocalDateTime;
+import lombok.NoArgsConstructor;
 
 import static jakarta.persistence.FetchType.LAZY;
 import static jakarta.persistence.GenerationType.IDENTITY;
+import static lombok.AccessLevel.PROTECTED;
 
 @Entity
 @Getter
-@EntityListeners(AuditingEntityListener.class)
-public class Category {
+@NoArgsConstructor(access = PROTECTED)
+public class Category extends BaseEntity {
 
     @Id @GeneratedValue(strategy = IDENTITY)
     @Column(name = "category_id")
@@ -22,14 +19,13 @@ public class Category {
 
     private String categoryName;
 
-    @CreatedDate
-    private LocalDateTime createdDate;
-
-    @LastModifiedDate
-    private LocalDateTime modifiedDate;
-
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "user_id")
     private User user;
+
+    public Category(String categoryName, User user) {
+        this.categoryName = categoryName;
+        this.user = user;
+    }
 
 }
