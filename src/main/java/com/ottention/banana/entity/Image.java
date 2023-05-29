@@ -4,11 +4,6 @@ import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-
-import java.time.LocalDateTime;
 
 import static jakarta.persistence.FetchType.LAZY;
 import static jakarta.persistence.GenerationType.IDENTITY;
@@ -17,8 +12,7 @@ import static lombok.AccessLevel.PROTECTED;
 @Entity
 @Getter
 @NoArgsConstructor(access = PROTECTED)
-@EntityListeners(AuditingEntityListener.class)
-public class Image {
+public class Image extends BaseEntity {
 
     @Id @GeneratedValue(strategy = IDENTITY)
     @Column(name = "image_id")
@@ -28,14 +22,8 @@ public class Image {
     private Boolean isFront; //앞, 뒤 구분
 
     @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "card_id")
+    @JoinColumn(name = "business_card_id")
     private BusinessCard businessCard;
-
-    @CreatedDate
-    private LocalDateTime createdDate;
-
-    @LastModifiedDate
-    private LocalDateTime modifiedDate;
 
     public static Image createImage(String imageUrl, Boolean isFront, BusinessCard businessCard) {
         return Image.builder()
