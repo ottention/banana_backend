@@ -16,7 +16,7 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
-        resolvers.add(new Config(jwtService));
+        resolvers.add(new JwtArgumentResolver(jwtService));
     }
 
 }
