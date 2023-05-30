@@ -1,4 +1,4 @@
-package com.ottention.banana.response;
+package com.ottention.banana.response.jwt;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
