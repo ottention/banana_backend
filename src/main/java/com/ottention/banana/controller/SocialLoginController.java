@@ -1,12 +1,9 @@
 package com.ottention.banana.controller;
 
 import com.ottention.banana.response.google.GoogleOAuth2UserInfo;
-import com.ottention.banana.response.JwtResponse;
+import com.ottention.banana.response.jwt.JwtResponse;
 import com.ottention.banana.response.kakao.GetMemberInfoResponse;
-import com.ottention.banana.service.GoogleAuthService;
-import com.ottention.banana.service.JwtService;
-import com.ottention.banana.service.KakaoAuthService;
-import com.ottention.banana.service.UserService;
+import com.ottention.banana.service.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -16,14 +13,13 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class SocialLoginController {
 
-    private final KakaoAuthService kakaoAuthService;
-    private final GoogleAuthService googleAuthService;
+    private final SocialLoginService socialLoginService;
     private final JwtService jwtService;
     private final UserService userService;
 
     @PostMapping("/token")
-    public JwtResponse token(@RequestParam String accessToken) {
-        GetMemberInfoResponse userInfo = kakaoAuthService.getMemberInfo(accessToken);
+    public JwtResponse kakaoLogin(@RequestParam String accessToken) {
+        GetMemberInfoResponse userInfo = socialLoginService.getKakaoMemberInfo(accessToken);
         Long userId = userService.saveFromKakao(userInfo);
 
         String generateAccessToken = jwtService.generateAccessToken(userId);
@@ -34,7 +30,7 @@ public class SocialLoginController {
 
     @PostMapping("/idToken")
     public JwtResponse googleLogin(@RequestParam String idToken) {
-        GoogleOAuth2UserInfo googleOAuth2UserInfo = googleAuthService.googleLogin(idToken);
+        GoogleOAuth2UserInfo googleOAuth2UserInfo = socialLoginService.getGoogleMemberInfo(idToken);
         Long userId = userService.saveFromGoogle(googleOAuth2UserInfo);
 
         String generateAccessToken = jwtService.generateAccessToken(userId);
