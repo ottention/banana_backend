@@ -41,15 +41,16 @@ public class BusinessCardService {
     private final S3Config s3Config;
 
     /**
-     * 명함 저장
-     * @param userId : 회원 id
-     * @param frontRequest : 명함 앞면
-     * @param backRequest : 명함 뒷면
-     * @param files : 사진
+     * @param userId
+     * @param frontRequest : 명함 앞 요청
+     * @param backRequest  : 명함 뒤 요청
+     * @param frontImages  : 명함 앞 이미지
+     * @param backImages   : 명함 뒤 이미지
+     * @return
      */
     @Transactional
     public Long save(Long userId, SaveFrontBusinessCardRequest frontRequest, SaveBackBusinessCardRequest backRequest,
-                     List<MultipartFile> files) {
+                     List<MultipartFile> frontImages, List<MultipartFile> backImages) {
         User findUser = userRepository.findById(userId)
                 .orElseThrow(UserNotFound::new);
 
@@ -60,7 +61,7 @@ public class BusinessCardService {
                 .build();
 
         saveBusinessCardContents(frontRequest, backRequest, businessCard);
-        saveBusinessCardImages(files, businessCard);
+        saveBusinessCardImages(frontImages, backImages, businessCard);
 
         return businessCardRepository.save(businessCard).getId();
     }
@@ -81,10 +82,11 @@ public class BusinessCardService {
 
     /**
      * @param contents : 명함 내용 관련 정보들 (명함 내용, 텍스트 박스 크기, x, y 축)
-     * @param isFront : 명함 앞 뒤 구분 true면 앞 false면 뒤
+     * @param isFront  : 명함 앞 뒤 구분 true면 앞 false면 뒤
      */
     private void saveContents(List<ContentResponse> contents, boolean isFront, BusinessCard businessCard) {
         for (ContentResponse content : contents) {
+            //String -> enum으로 변경 ex h1으로 들어오면 H1으로 변경
             ContentSize contentSize = ContentSize.fromString(content.getContentSize());
 
             BusinessCardContent businessCardContent = BusinessCardContent.createBusinessCardContent(content.getContent(),
@@ -113,16 +115,18 @@ public class BusinessCardService {
     }
 
     /**
-     * 이미지 저장
-     * @param files : 이미지
+     * @param frontImages  : 명함 앞 이미지 파일들
+     * @param backImages   : 명함 뒤 이미지 파일들
+     * @param businessCard
      */
-    private void saveBusinessCardImages(List<MultipartFile> files, BusinessCard businessCard) {
-        saveImages(files, businessCard, true);
-        saveImages(files, businessCard, false);
+    private void saveBusinessCardImages(List<MultipartFile> frontImages, List<MultipartFile> backImages, BusinessCard businessCard) {
+        saveImages(frontImages, businessCard, true);
+        saveImages(backImages, businessCard, false);
     }
 
     /**
      * AWS S3에 업로드
+     *
      * @param files
      * @param businessCard
      * @param isFront
@@ -153,12 +157,13 @@ public class BusinessCardService {
      */
     private void saveImage(BusinessCard businessCard, boolean isFront, String s3FileName) {
         Image image = Image.createImage(s3FileName, isFront, businessCard);
+        log.info("image = {} ", image.getImageUrl());
         imageRepository.save(image);
     }
 
     /**
      * S3 업로드
-     * @param file : 이미지 파일
+     * @param file       : 이미지 파일
      * @param s3FileName : 이미지 파일 이름
      */
     private void uploadFileToS3(MultipartFile file, String s3FileName) throws IOException {
