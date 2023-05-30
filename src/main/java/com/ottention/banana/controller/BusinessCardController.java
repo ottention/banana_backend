@@ -25,11 +25,13 @@ public class BusinessCardController {
     private final QRCodeService qrCodeService;
 
     @PostMapping(value = "/save", consumes = {APPLICATION_JSON_VALUE, MULTIPART_FORM_DATA_VALUE})
-    public void saveBusinessCard(@Login LoginUser user, @RequestPart(required = false) SaveFrontBusinessCardRequest frontRequest,
+    public Long saveBusinessCard(@Login LoginUser user, @RequestPart(required = false) SaveFrontBusinessCardRequest frontRequest,
                                  @RequestPart(required = false) SaveBackBusinessCardRequest backRequest,
-                                 @RequestPart(required = false) List<MultipartFile> files) {
-        Long businessCardId = businessCardService.save(user.getId(), frontRequest, backRequest, files);
+                                 @RequestPart(required = false) List<MultipartFile> frontImages,
+                                 @RequestPart(required = false) List<MultipartFile> backImages) {
+        Long businessCardId = businessCardService.save(user.getId(), frontRequest, backRequest, frontImages, backImages);
         qrCodeService.generateAndSaveQrCode(ADDRESS + businessCardId, businessCardId);
+        return businessCardId;
     }
 
     @GetMapping("/businessCard/front/{businessCardId}")
