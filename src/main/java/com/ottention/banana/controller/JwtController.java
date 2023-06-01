@@ -14,7 +14,7 @@ public class JwtController {
     private final JwtService jwtService;
 
     @PostMapping("/reissue")
-    public ReissueResponse reissueToken(@RequestHeader("RefreshToken") String refreshToken) {
+    public ReissueResponse reissueToken(@RequestHeader("refreshToken") String refreshToken) {
         String reissuedAccessToken = jwtService.reissueAccessToken(refreshToken);
         return new ReissueResponse(reissuedAccessToken);
     }
