@@ -1,6 +1,9 @@
 package com.ottention.banana.entity;
 
+import com.ottention.banana.exception.InvalidContentSize;
+
 public enum ContentSize {
+
     H1("h1"), H2("h2");
 
     private String size;
@@ -19,7 +22,7 @@ public enum ContentSize {
                 return size;
             }
         }
-        throw new IllegalArgumentException("Invalid ContentSize value: " + value);
+        throw new InvalidContentSize();
     }
 
 }
