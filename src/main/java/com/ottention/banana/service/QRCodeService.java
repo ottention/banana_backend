@@ -28,10 +28,10 @@ public class QRCodeService {
     private final BusinessCardRepository businessCardRepository;
 
     @Transactional
-    public void generateAndSaveQrCode(String text, Long businessCardId) {
+    public Long generateAndSaveQrCode(String text, Long businessCardId) {
         BusinessCard businessCard = getBusinessCardById(businessCardId);
         byte[] qrCodeImage = generateQrCodeImage(text);
-        saveQrCode(qrCodeImage, text, businessCard);
+        return saveQrCode(qrCodeImage, text, businessCard);
     }
 
     private BusinessCard getBusinessCardById(Long businessCardId) {
@@ -50,18 +50,18 @@ public class QRCodeService {
         }
     }
 
-    private void saveQrCode(byte[] qrCodeImage, String address, BusinessCard businessCard) {
+    private Long saveQrCode(byte[] qrCodeImage, String address, BusinessCard businessCard) {
         QRCode qrCode = QRCode.builder()
                 .businessCardAddress(address)
                 .qrCodeImage(qrCodeImage)
                 .businessCard(businessCard)
                 .build();
-        qrCodeRepository.save(qrCode);
+        return qrCodeRepository.save(qrCode).getId();
     }
 
     public byte[] getQrCodeImageById(Long businessCardId) {
         BusinessCard businessCard = businessCardRepository.findById(businessCardId)
-                .orElseThrow();
+                .orElseThrow(BusinessCardNotFound::new);
 
         QRCode qrCode = businessCard.getQrCode();
 
