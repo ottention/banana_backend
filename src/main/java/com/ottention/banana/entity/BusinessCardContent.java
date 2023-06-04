@@ -24,31 +24,29 @@ public class BusinessCardContent extends BaseEntity {
     @Enumerated(STRING)
     private ContentSize contentSize;
 
-    private int xAxis;
-    private int yAxis;
+    @Embedded
+    private ContentCoordinate coordinate;
     private boolean isFront;
 
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "business_card_id")
     private BusinessCard businessCard;
 
-    public static BusinessCardContent createBusinessCardContent(String content, ContentSize contentSize,
-                                                                int xAxis, int yAxis, boolean isFront) {
+    public static BusinessCardContent updateBusinessCardContent(String content, ContentSize contentSize,
+                                                                ContentCoordinate coordinate, boolean isFront) {
         return BusinessCardContent.builder()
                 .content(content)
                 .contentSize(contentSize)
-                .xAxis(xAxis)
-                .yAxis(yAxis)
+                .coordinate(coordinate)
                 .isFront(isFront)
                 .build();
     }
 
     @Builder
-    public BusinessCardContent(String content, ContentSize contentSize, int xAxis, int yAxis, boolean isFront) {
+    public BusinessCardContent(String content, ContentSize contentSize, ContentCoordinate coordinate, boolean isFront) {
         this.content = content;
         this.contentSize = contentSize;
-        this.xAxis = xAxis;
-        this.yAxis = yAxis;
+        this.coordinate = coordinate;
         this.isFront = isFront;
     }
 
