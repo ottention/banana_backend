@@ -11,7 +11,7 @@ import org.springframework.web.servlet.HandlerInterceptor;
 
 /**
  * 로그인 체크 인터셉터
- * Authorization헤더에 있는 accessToken 값 검증 후 통과면 true 반환 아니면 예외
+ * Authorization헤더에 있는 accessToken 값 검증 후 통과면 HttpServletRequest에 값 담은 후 true 반환 아니면 예외
  */
 @Slf4j
 @RequiredArgsConstructor
@@ -25,7 +25,8 @@ public class LoginCheckInterceptor implements HandlerInterceptor {
         jwtService.validateAccessToken(accessToken);
 
         try {
-            jwtService.getSubject(accessToken);
+            Long userId = jwtService.getSubject(accessToken);
+            request.setAttribute("userId", userId);
         } catch (JwtException e) {
             log.info("미인증 사용자 요청");
             throw new Unauthorized();
