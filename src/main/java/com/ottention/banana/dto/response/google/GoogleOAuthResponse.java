@@ -1,4 +1,4 @@
-package com.ottention.banana.response.google;
+package com.ottention.banana.dto.response.google;
 
 import lombok.Getter;
 

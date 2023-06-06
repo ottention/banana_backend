@@ -1,4 +1,4 @@
-package com.ottention.banana.response.error;
+package com.ottention.banana.dto.response.error;
 
 import lombok.Builder;
 import lombok.Getter;

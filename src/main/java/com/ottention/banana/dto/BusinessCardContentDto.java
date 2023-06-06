@@ -1,4 +1,4 @@
-package com.ottention.banana.response.businesscard;
+package com.ottention.banana.dto;
 
 import com.ottention.banana.entity.BusinessCardContent;
 import com.ottention.banana.entity.ContentCoordinate;

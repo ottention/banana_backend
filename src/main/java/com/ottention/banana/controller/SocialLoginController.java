@@ -1,8 +1,8 @@
 package com.ottention.banana.controller;
 
-import com.ottention.banana.response.google.GoogleOAuth2UserInfo;
-import com.ottention.banana.response.jwt.JwtResponse;
-import com.ottention.banana.response.kakao.GetMemberInfoResponse;
+import com.ottention.banana.dto.response.google.GoogleOAuth2UserInfo;
+import com.ottention.banana.dto.response.jwt.JwtResponse;
+import com.ottention.banana.dto.response.kakao.GetMemberInfoResponse;
 import com.ottention.banana.service.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;

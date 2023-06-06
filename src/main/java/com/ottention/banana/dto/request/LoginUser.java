@@ -1,4 +1,4 @@
-package com.ottention.banana.request;
+package com.ottention.banana.dto.request;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

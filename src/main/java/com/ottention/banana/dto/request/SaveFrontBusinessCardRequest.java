@@ -1,6 +1,6 @@
-package com.ottention.banana.request;
+package com.ottention.banana.dto.request;
 
-import com.ottention.banana.response.businesscard.BusinessCardContentDto;
+import com.ottention.banana.dto.BusinessCardContentDto;
 import lombok.Getter;
 import lombok.Setter;
 

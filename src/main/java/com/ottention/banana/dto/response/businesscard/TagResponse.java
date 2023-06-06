@@ -1,4 +1,4 @@
-package com.ottention.banana.response.businesscard;
+package com.ottention.banana.dto.response.businesscard;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

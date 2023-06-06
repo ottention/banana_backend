@@ -1,4 +1,4 @@
-package com.ottention.banana.response.kakao;
+package com.ottention.banana.dto.response.kakao;
 
 
 import lombok.*;
