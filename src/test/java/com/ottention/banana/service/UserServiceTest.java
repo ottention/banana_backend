@@ -2,7 +2,7 @@ package com.ottention.banana.service;
 
 import com.ottention.banana.entity.User;
 import com.ottention.banana.repository.UserRepository;
-import com.ottention.banana.response.google.GoogleOAuth2UserInfo;
+import com.ottention.banana.dto.response.google.GoogleOAuth2UserInfo;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
