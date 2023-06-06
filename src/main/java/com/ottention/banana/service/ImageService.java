@@ -40,7 +40,6 @@ public class ImageService {
 
     /**
      * AWS S3에 업로드
-     *
      * @param files
      * @param businessCard
      * @param isFront
@@ -48,22 +47,27 @@ public class ImageService {
     private void saveImages(List<MultipartFile> files, BusinessCard businessCard, boolean isFront) {
         if (files != null) {
             for (MultipartFile file : files) {
-                String s3FileName = generateS3FileName(file);
-                try {
-                    uploadFileToS3(file, s3FileName);
-                    saveImage(businessCard, isFront, s3FileName);
-                } catch (IOException e) {
-                    throw new FileUploadException();
-                }
+                String s3FileName = randomUUID() + "-" + file.getOriginalFilename();
+                uploadFileToS3(businessCard, isFront, file, s3FileName);
             }
         }
     }
 
     /**
-     * 이미지 파일 이름 생성
+     * @param businessCard : 이미지와 연관관계 매핑
+     * @param isFront : 앞 뒤 구분
+     * @param file : 이미지 파일
+     * @param s3FileName : 이미지 파일 이름
      */
-    private String generateS3FileName(MultipartFile file) {
-        return randomUUID() + "-" + file.getOriginalFilename();
+    private void uploadFileToS3(BusinessCard businessCard, boolean isFront, MultipartFile file, String s3FileName) {
+        try {
+            ObjectMetadata objMeta = new ObjectMetadata();
+            objMeta.setContentLength(file.getInputStream().available());
+            amazonS3.putObject(s3Config.getBucket(), s3FileName, file.getInputStream(), objMeta);
+            saveImage(businessCard, isFront, s3FileName);
+        } catch (IOException e) {
+            throw new FileUploadException();
+        }
     }
 
     /**
@@ -73,18 +77,7 @@ public class ImageService {
         Image image = Image.createImage(s3FileName, isFront, businessCard);
         imageRepository.save(image);
     }
-
-    /**
-     * S3 업로드
-     * @param file       : 이미지 파일
-     * @param s3FileName : 이미지 파일 이름
-     */
-    private void uploadFileToS3(MultipartFile file, String s3FileName) throws IOException {
-        ObjectMetadata objMeta = new ObjectMetadata();
-        objMeta.setContentLength(file.getInputStream().available());
-        amazonS3.putObject(s3Config.getBucket(), s3FileName, file.getInputStream(), objMeta);
-    }
-
+    
     /**
      * 이미지 URL 가져오는 메서드
      */
