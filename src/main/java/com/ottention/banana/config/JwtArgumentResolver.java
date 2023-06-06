@@ -1,6 +1,6 @@
 package com.ottention.banana.config;
 
-import com.ottention.banana.request.LoginUser;
+import com.ottention.banana.dto.request.LoginUser;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.MethodParameter;

@@ -2,8 +2,8 @@ package com.ottention.banana.service;
 
 import com.ottention.banana.api.GoogleAuthApi;
 import com.ottention.banana.api.KakaoAuthApi;
-import com.ottention.banana.response.google.GoogleOAuth2UserInfo;
-import com.ottention.banana.response.kakao.GetMemberInfoResponse;
+import com.ottention.banana.dto.response.google.GoogleOAuth2UserInfo;
+import com.ottention.banana.dto.response.kakao.GetMemberInfoResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

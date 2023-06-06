@@ -1,7 +1,7 @@
 package com.ottention.banana.controller;
 
 import com.ottention.banana.exception.Exception;
-import com.ottention.banana.response.error.ErrorResponse;
+import com.ottention.banana.dto.response.error.ErrorResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;

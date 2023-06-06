@@ -1,8 +1,8 @@
 package com.ottention.banana.api;
 
 import com.ottention.banana.config.SocialLoginConfig;
-import com.ottention.banana.response.google.GoogleOAuth2UserInfo;
-import com.ottention.banana.response.google.GoogleOAuthResponse;
+import com.ottention.banana.dto.response.google.GoogleOAuth2UserInfo;
+import com.ottention.banana.dto.response.google.GoogleOAuthResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;

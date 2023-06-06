@@ -1,7 +1,7 @@
 package com.ottention.banana.api;
 
 import com.ottention.banana.config.SocialLoginConfig;
-import com.ottention.banana.response.kakao.GetMemberInfoResponse;
+import com.ottention.banana.dto.response.kakao.GetMemberInfoResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;

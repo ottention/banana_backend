@@ -1,6 +1,6 @@
 package com.ottention.banana.controller;
 
-import com.ottention.banana.response.jwt.ReissueResponse;
+import com.ottention.banana.dto.response.jwt.ReissueResponse;
 import com.ottention.banana.service.JwtService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
