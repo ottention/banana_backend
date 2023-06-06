@@ -1,8 +1,9 @@
 package com.ottention.banana.service;
 
-import com.ottention.banana.entity.User;
-import com.ottention.banana.repository.UserRepository;
 import com.ottention.banana.dto.response.google.GoogleOAuth2UserInfo;
+import com.ottention.banana.entity.User;
+import com.ottention.banana.exception.UserNotFound;
+import com.ottention.banana.repository.UserRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +30,7 @@ class UserServiceTest {
         //when
         Long id = userService.saveFromGoogle(userInfo);
         User user = userRepository.findById(id)
-                .orElseThrow();
+                .orElseThrow(UserNotFound::new);
 
         //then
         assertThat(user.getNickName()).isEqualTo("test");
@@ -40,18 +41,14 @@ class UserServiceTest {
     @DisplayName("이미 저장된 회원은 저장하지 않고 기존 id 값을 반환")
     void duplicateUserSaveTest() {
         //given
-        User user = User.builder()
-                .nickName("test")
-                .email("test1234@gmail.com")
-                .build();
-
-        User saveUser = userRepository.save(user);
+        GoogleOAuth2UserInfo userInfo = new GoogleOAuth2UserInfo("test", "test1234@gmail.com");
 
         //when
-        Long userId = userService.saveUser(user);
+        Long id1 = userService.saveFromGoogle(userInfo);
+        Long id2 = userService.saveFromGoogle(userInfo);
 
         //then
-        assertThat(saveUser.getId()).isEqualTo(userId);
+        assertThat(id1).isEqualTo(id2);
     }
 
 }
