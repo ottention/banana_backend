@@ -31,7 +31,7 @@ public class UserService {
         return saveUser(user);
     }
 
-    public Long saveUser(User user) {
+    private Long saveUser(User user) {
         return userRepository.findByEmail(user.getEmail())
                 .map(User::getId)
                 .orElseGet(() -> userRepository.save(user).getId());
