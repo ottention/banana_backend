@@ -1,5 +1,8 @@
 package com.ottention.banana.service;
 
+import com.ottention.banana.dto.request.SaveBackBusinessCardRequest;
+import com.ottention.banana.dto.request.SaveFrontBusinessCardRequest;
+import com.ottention.banana.dto.response.businesscard.BusinessCardResponse;
 import com.ottention.banana.entity.BusinessCard;
 import com.ottention.banana.entity.BusinessCardContent;
 import com.ottention.banana.entity.Image;
@@ -8,11 +11,6 @@ import com.ottention.banana.exception.BusinessCardNotFound;
 import com.ottention.banana.exception.UserNotFound;
 import com.ottention.banana.repository.BusinessCardRepository;
 import com.ottention.banana.repository.UserRepository;
-import com.ottention.banana.dto.request.SaveBackBusinessCardRequest;
-import com.ottention.banana.dto.request.SaveFrontBusinessCardRequest;
-import com.ottention.banana.dto.request.UpdateBackBusinessCardRequest;
-import com.ottention.banana.dto.request.UpdateFrontBusinessCardRequest;
-import com.ottention.banana.dto.response.businesscard.BusinessCardResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -56,15 +54,6 @@ public class BusinessCardService {
         imageService.saveBusinessCardImages(frontImages, backImages, businessCard);
 
         return businessCardRepository.save(businessCard).getId();
-    }
-
-    /**
-     * UpdateSave/BackBusinessCardRequest Dto 만든 후 요청으로 받음
-     * 명함 앞/뒤 데이터 구분해서 가져오고 요청으로 받은 거 update
-     * 사진 수정은 어떻게?
-     */
-    public void update(UpdateFrontBusinessCardRequest frontRequest, UpdateBackBusinessCardRequest backRequest) {
-
     }
 
     /**
