@@ -1,10 +1,10 @@
 package com.ottention.banana.controller;
 
 import com.ottention.banana.config.Login;
-import com.ottention.banana.request.LoginUser;
-import com.ottention.banana.request.SaveBackBusinessCardRequest;
-import com.ottention.banana.request.SaveFrontBusinessCardRequest;
-import com.ottention.banana.response.businesscard.BusinessCardResponse;
+import com.ottention.banana.dto.request.LoginUser;
+import com.ottention.banana.dto.request.SaveBackBusinessCardRequest;
+import com.ottention.banana.dto.request.SaveFrontBusinessCardRequest;
+import com.ottention.banana.dto.response.businesscard.BusinessCardResponse;
 import com.ottention.banana.service.BusinessCardService;
 import com.ottention.banana.service.QRCodeService;
 import lombok.RequiredArgsConstructor;
@@ -14,7 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
-import static com.ottention.banana.Const.ADDRESS;
+import static com.ottention.banana.AddressConstant.ADDRESS;
 import static org.springframework.http.MediaType.*;
 
 @RestController
