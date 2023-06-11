@@ -29,14 +29,10 @@ public class QRCodeService {
 
     @Transactional
     public Long generateAndSaveQrCode(String text, Long businessCardId) {
-        BusinessCard businessCard = getBusinessCardById(businessCardId);
+        BusinessCard businessCard = businessCardRepository.findById(businessCardId)
+                .orElseThrow(BusinessCardNotFound::new);
         byte[] qrCodeImage = generateQrCodeImage(text);
         return saveQrCode(qrCodeImage, text, businessCard);
-    }
-
-    private BusinessCard getBusinessCardById(Long businessCardId) {
-        return businessCardRepository.findById(businessCardId)
-                .orElseThrow(BusinessCardNotFound::new);
     }
 
     private byte[] generateQrCodeImage(String text) {
@@ -67,4 +63,5 @@ public class QRCodeService {
 
         return qrCode.getQrCodeImage();
     }
+
 }
