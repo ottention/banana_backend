@@ -23,7 +23,7 @@ public class GuestBook extends BaseEntity {
     private Boolean guestBookLike; //방명록 좋아요 여부
 
     @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "card_id")
+    @JoinColumn(name = "business_card_id")
     private BusinessCard businessCard;
 
     @ManyToOne(fetch = LAZY)
