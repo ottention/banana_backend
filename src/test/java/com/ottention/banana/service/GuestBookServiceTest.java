@@ -199,7 +199,7 @@ class GuestBookServiceTest {
         List<GuestBookResponse> myGuestBooks = guestBookService.getMyWrittenGuestBooks(user2.getId(), pageable);
 
         //then
-        assertEquals(myGuestBooks.get(0).getContent(), "방명록 내용 테스트19");
-        assertEquals(myGuestBooks.get(9).getContent(), "방명록 내용 테스트10");
+        assertEquals(myGuestBooks.get(0).getContent(), "방명록 내용19");
+        assertEquals(myGuestBooks.get(9).getContent(), "방명록 내용10");
     }
 }
