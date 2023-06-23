@@ -28,14 +28,12 @@ public class StoredBusinessCardService {
     //저장된 명함 조회
     public List<StoredCardResponse> getAllStoredBusinessCards(Long id) {
         List<StoredBusinessCard> storedBusinessCards = storedCardRepository.findAllByUserIdOrderByModifiedDateDesc(id);
-
         return getRequestedStoredCards(storedBusinessCards);
     }
 
     //즐겨찾기 최근 2개 조회
     public List<StoredCardResponse> getTwoBookmarkedCards(Long id) {
         List<StoredBusinessCard> storedBusinessCards = storedCardRepository.findTop2ByUserIdOrderByModifiedDateDesc(id);
-
         return getRequestedStoredCards(storedBusinessCards);
     }
 
@@ -45,10 +43,15 @@ public class StoredBusinessCardService {
         return getRequestedStoredCards(storedBusinessCards);
     }
 
+    //카테고리별 명함
+    public List<StoredCardResponse> getStoredCardByCategory(long categoryId, Pageable pageable) {
+        List<StoredBusinessCard> storedBusinessCards = storedCardRepository.findAllByCategoryIdOrderByModifiedDateDesc(categoryId, pageable);
+        return getRequestedStoredCards(storedBusinessCards);
+    }
+
     private List<StoredCardResponse> getRequestedStoredCards(List<StoredBusinessCard> storedBusinessCards) {
         List<StoredCardResponse> storedCardResponses = new ArrayList<>();
         storedBusinessCards.forEach(c -> storedCardResponses.add(new StoredCardResponse(c, getByBusinessCardId(c.getBusinessCard().getId(), IS_FRONT))));
-
         return storedCardResponses;
     }
 
