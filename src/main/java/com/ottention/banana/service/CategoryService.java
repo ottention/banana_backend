@@ -24,4 +24,8 @@ public class CategoryService {
         categories.forEach(c -> categoryResponses.add(new CategoryResponse(c)));
         return categoryResponses;
     }
+
+    public String getCategoryName(long categoryId) {
+        return categoryRepository.findById(categoryId).get().getCategoryName();
+    }
 }
