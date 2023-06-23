@@ -10,6 +10,9 @@ import com.ottention.banana.repository.BusinessCardContentRepository;
 import com.ottention.banana.repository.BusinessCardRepository;
 import com.ottention.banana.repository.StoredBusinessCardRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,18 +30,19 @@ public class WalletService {
 
 
     public List<StoredCardResponse> getList(Long id, boolean isFront) {
-        List<StoredBusinessCard> storedBusinessCards = storedCardRepository.findByUserId(id);
-        List<BusinessCard> businessCards = new ArrayList<>();
+
+
+        List<StoredBusinessCard> storedBusinessCards = storedCardRepository.findAllByUserIdOrderByModifiedDateDesc(id);
         List<StoredCardResponse> storedCardResponses = new ArrayList<>();
 
-        storedBusinessCards.forEach(c -> businessCards.add(getBusinessCardByStoredCardId(c)));
         storedBusinessCards.forEach(c -> storedCardResponses.add(new StoredCardResponse(c, getByBusinessCardId(c.getBusinessCard().getId(), isFront))));
 
         return storedCardResponses;
-
     }
 
 
+
+    //전체 명함
     private List<StoredCardContentResponse> getByBusinessCardId(Long id, boolean isFront) {
         List<BusinessCardContent> businessCardContents = businessCardContentRepository.findByBusinessCardIdAndIsFront(id, isFront);
         List<StoredCardContentResponse> storedCardContentResponses = new ArrayList<>();
@@ -46,8 +50,5 @@ public class WalletService {
         return storedCardContentResponses;
     }
 
-    private BusinessCard getBusinessCardByStoredCardId(StoredBusinessCard storedCard) {
-        return businessCardRepository.findById(storedCard.getBusinessCard().getId())
-                .orElseThrow(BusinessCardNotFound::new);
-    }
+
 }
