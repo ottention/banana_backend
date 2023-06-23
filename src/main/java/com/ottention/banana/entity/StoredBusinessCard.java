@@ -1,6 +1,7 @@
 package com.ottention.banana.entity;
 
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -32,4 +33,7 @@ public class StoredBusinessCard extends BaseEntity {
     @JoinColumn(name = "user_id")
     private User user;  //명함 저장한 사람
 
+    public void modifyIsBookmarked(Long id, boolean isBookmarked) {
+        this.isBookmarked = true;
+    }
 }
