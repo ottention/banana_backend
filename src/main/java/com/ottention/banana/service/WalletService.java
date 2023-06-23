@@ -24,31 +24,41 @@ import java.util.List;
 @RequiredArgsConstructor
 public class WalletService {
 
+    static final boolean IS_FRONT = true;
+
     private final StoredBusinessCardRepository storedCardRepository;
-    private final BusinessCardRepository businessCardRepository;
     private final BusinessCardContentRepository businessCardContentRepository;
 
 
-    public List<StoredCardResponse> getList(Long id, boolean isFront) {
-
-
+    //저장된 명함 조회
+    public List<StoredCardResponse> getAllStoredBusinessCards(Long id) {
         List<StoredBusinessCard> storedBusinessCards = storedCardRepository.findAllByUserIdOrderByModifiedDateDesc(id);
-        List<StoredCardResponse> storedCardResponses = new ArrayList<>();
 
-        storedBusinessCards.forEach(c -> storedCardResponses.add(new StoredCardResponse(c, getByBusinessCardId(c.getBusinessCard().getId(), isFront))));
+        return getRequestedStoredCards(storedBusinessCards);
+    }
+
+    //즐겨찾기 최근 2개 조회
+    public List<StoredCardResponse> getTwoBookmarkedCards(Long id) {
+        List<StoredBusinessCard> storedBusinessCards = storedCardRepository.findTop2ByUserIdOrderByModifiedDateDesc(id);
+
+        return getRequestedStoredCards(storedBusinessCards);
+    }
+
+    private List<StoredCardResponse> getRequestedStoredCards(List<StoredBusinessCard> storedBusinessCards) {
+        List<StoredCardResponse> storedCardResponses = new ArrayList<>();
+        storedBusinessCards.forEach(c -> storedCardResponses.add(new StoredCardResponse(c, getByBusinessCardId(c.getBusinessCard().getId(), IS_FRONT))));
 
         return storedCardResponses;
     }
 
-
-
-    //전체 명함
     private List<StoredCardContentResponse> getByBusinessCardId(Long id, boolean isFront) {
         List<BusinessCardContent> businessCardContents = businessCardContentRepository.findByBusinessCardIdAndIsFront(id, isFront);
         List<StoredCardContentResponse> storedCardContentResponses = new ArrayList<>();
         businessCardContents.forEach(c -> storedCardContentResponses.add(new StoredCardContentResponse(c)));
         return storedCardContentResponses;
     }
+
+
 
 
 }
