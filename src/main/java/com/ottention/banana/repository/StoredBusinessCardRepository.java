@@ -12,5 +12,6 @@ public interface StoredBusinessCardRepository extends JpaRepository<StoredBusine
     List<StoredBusinessCard> findAllByUserIdOrderByModifiedDateDesc(Long userId);
     List<StoredBusinessCard> findTop2ByUserIdOrderByModifiedDateDesc(Long userId);
     List<StoredBusinessCard> findAllByUserIdAndIsBookmarkedTrueOrderByModifiedDateDesc(Long userId, Pageable pageable);
+    List<StoredBusinessCard> findAllByCategoryIdOrderByModifiedDateDesc(Long categoryId, Pageable pageable);
 }
 
