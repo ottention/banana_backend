@@ -2,18 +2,12 @@ package com.ottention.banana.service;
 
 import com.ottention.banana.dto.response.businesscard.StoredCardContentResponse;
 import com.ottention.banana.dto.response.businesscard.StoredCardResponse;
-import com.ottention.banana.entity.BusinessCard;
 import com.ottention.banana.entity.BusinessCardContent;
 import com.ottention.banana.entity.StoredBusinessCard;
-import com.ottention.banana.exception.BusinessCardNotFound;
 import com.ottention.banana.repository.BusinessCardContentRepository;
-import com.ottention.banana.repository.BusinessCardRepository;
 import com.ottention.banana.repository.StoredBusinessCardRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,7 +17,7 @@ import java.util.List;
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
-public class WalletService {
+public class StoredBusinessCardService {
 
     static final boolean IS_FRONT = true;
 
