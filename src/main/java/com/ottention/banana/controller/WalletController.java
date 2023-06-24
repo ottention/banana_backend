@@ -35,4 +35,11 @@ public class WalletController {
 
         return ResponseEntity.ok(result);
     }
+    //즐겨찾기
+    @GetMapping("/bookmark")
+    public ResponseEntity<List<StoredCardResponse>> getBookmarkedStoredBusinessCards(@Login LoginUser user, @PageableDefault(sort = "modifiedDate", direction = DESC) Pageable pageable) {
+        List<StoredCardResponse> result = storedBusinessCardService.getBookmarkedStoredCards(user.getId(), pageable);
+
+        return ResponseEntity.ok(result);
+    }
 }
