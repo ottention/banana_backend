@@ -1,7 +1,7 @@
 package com.ottention.banana.dto;
 
 import com.ottention.banana.entity.BusinessCardContent;
-import com.ottention.banana.entity.ContentCoordinate;
+import com.ottention.banana.entity.Coordinate;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,7 +12,7 @@ public class BusinessCardContentDto {
 
     private String content;
     private String contentSize;
-    private ContentCoordinate coordinate;
+    private Coordinate coordinate;
 
     public static BusinessCardContentDto toContent(BusinessCardContent businessCardContent) {
         return BusinessCardContentDto.builder()
