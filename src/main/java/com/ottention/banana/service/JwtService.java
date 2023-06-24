@@ -25,23 +25,20 @@ public class JwtService {
 
     public String generateAccessToken(Long userId) {
         SecretKey key = getSecretKey();
-
-        return Jwts.builder()
-                .setSubject(String.valueOf(userId))
-                .signWith(key)
-                .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + ACCESS_TOKEN_EXPIRE_TIME))
-                .compact();
+        return getCompact(userId, key, ACCESS_TOKEN_EXPIRE_TIME);
     }
 
     public String generateRefreshToken(Long userId) {
         SecretKey key = getSecretKey();
+        return getCompact(userId, key, REFRESH_TOKEN_EXPIRE_TIME);
+    }
 
+    private String getCompact(Long userId, SecretKey key, long expireTime) {
         return Jwts.builder()
                 .setSubject(String.valueOf(userId))
                 .signWith(key)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + REFRESH_TOKEN_EXPIRE_TIME))
+                .setExpiration(new Date(System.currentTimeMillis() + expireTime))
                 .compact();
     }
 
@@ -80,4 +77,5 @@ public class JwtService {
     private SecretKey getSecretKey() {
         return Keys.hmacShaKeyFor(jwtConfig.getJwtKey());
     }
+
 }
