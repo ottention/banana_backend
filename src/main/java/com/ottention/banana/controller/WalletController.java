@@ -42,4 +42,16 @@ public class WalletController {
 
         return ResponseEntity.ok(result);
     }
+    
+    //저장 폴더
+    @GetMapping("/categories")
+    public ResponseEntity<Map<String, Object>> getStoredCardCategories(@Login LoginUser user) {
+        Map<String, Object> result = new HashMap<>();
+        result.put("categories", categoryService.getCategories(user.getId()));
+        result.put("twoBookmarkedStoredCards", storedBusinessCardService.getTwoBookmarkedCards(user.getId()));
+
+        return ResponseEntity.ok(result);
+    }
+
+
 }
