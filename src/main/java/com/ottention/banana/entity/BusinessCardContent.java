@@ -25,7 +25,8 @@ public class BusinessCardContent extends BaseEntity {
     private ContentSize contentSize;
 
     @Embedded
-    private ContentCoordinate coordinate;
+    private Coordinate coordinate;
+
     private boolean isFront;
 
     @ManyToOne(fetch = LAZY)
@@ -33,7 +34,7 @@ public class BusinessCardContent extends BaseEntity {
     private BusinessCard businessCard;
 
     public static BusinessCardContent updateBusinessCardContent(String content, ContentSize contentSize,
-                                                                ContentCoordinate coordinate, boolean isFront) {
+                                                                Coordinate coordinate, boolean isFront) {
         return BusinessCardContent.builder()
                 .content(content)
                 .contentSize(contentSize)
@@ -43,7 +44,7 @@ public class BusinessCardContent extends BaseEntity {
     }
 
     @Builder
-    public BusinessCardContent(String content, ContentSize contentSize, ContentCoordinate coordinate, boolean isFront) {
+    public BusinessCardContent(String content, ContentSize contentSize, Coordinate coordinate, boolean isFront) {
         this.content = content;
         this.contentSize = contentSize;
         this.coordinate = coordinate;
