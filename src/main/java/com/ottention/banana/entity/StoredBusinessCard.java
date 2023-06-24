@@ -34,6 +34,6 @@ public class StoredBusinessCard extends BaseEntity {
     private User user;  //명함 저장한 사람
 
     public void modifyIsBookmarked(Long id, boolean isBookmarked) {
-        this.isBookmarked = true;
+        this.isBookmarked = isBookmarked;
     }
 }
