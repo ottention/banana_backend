@@ -8,13 +8,13 @@ import static lombok.AccessLevel.PROTECTED;
 
 @Embeddable
 @NoArgsConstructor(access = PROTECTED)
-public class ContentCoordinate {
+public class Coordinate {
 
     private int xAxis;
     private int yAxis;
 
     @Builder
-    public ContentCoordinate(int xAxis, int yAxis) {
+    public Coordinate(int xAxis, int yAxis) {
         this.xAxis = xAxis;
         this.yAxis = yAxis;
     }
