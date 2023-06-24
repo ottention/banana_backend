@@ -51,7 +51,8 @@ public class BusinessCardService {
                 .build();
 
         businessCardContentService.saveBusinessCardContents(frontRequest, backRequest, businessCard);
-        imageService.saveBusinessCardImages(frontImages, backImages, businessCard);
+        imageService.saveBusinessCardImages(frontRequest.getFrontImageCoordinates(), backRequest.getBackImageCoordinates(),
+                frontImages, backImages, businessCard);
 
         return businessCardRepository.save(businessCard).getId();
     }
@@ -84,7 +85,7 @@ public class BusinessCardService {
         List<String> imageUrls = imageService.getImageUrls(images);
         List<BusinessCardContent> contents = businessCardContentService.findByBusinessCardIdAndIsFront(businessCard.getId(), isFront);
 
-        return BusinessCardResponse.toBusinessCard(contents, imageUrls);
+        return BusinessCardResponse.toBusinessCard(contents, images);
     }
 
 }
