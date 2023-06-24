@@ -35,6 +35,7 @@ public class WalletController {
 
         return ResponseEntity.ok(result);
     }
+
     //즐겨찾기
     @GetMapping("/bookmark")
     public ResponseEntity<List<StoredCardResponse>> getBookmarkedStoredBusinessCards(@Login LoginUser user, @PageableDefault(sort = "modifiedDate", direction = DESC) Pageable pageable) {
@@ -42,7 +43,7 @@ public class WalletController {
 
         return ResponseEntity.ok(result);
     }
-    
+
     //저장 폴더
     @GetMapping("/categories")
     public ResponseEntity<Map<String, Object>> getStoredCardCategories(@Login LoginUser user) {
@@ -53,5 +54,12 @@ public class WalletController {
         return ResponseEntity.ok(result);
     }
 
-
+    //카테고리 - 상세
+    @GetMapping("/categories/{categoryId}")
+    public ResponseEntity<Map<String, Object>> getStoredCardByCategory(@PathVariable long categoryId, @PageableDefault(sort = "modifiedDate", direction = DESC) Pageable pageable) {
+        Map<String, Object> result = new HashMap<>();
+        result.put("storedCards", storedBusinessCardService.getStoredCardByCategory(categoryId, pageable));
+        result.put("categoryName", categoryService.getCategoryName(categoryId));
+        return ResponseEntity.ok(result);
+    }
 }
