@@ -3,6 +3,7 @@ package com.ottention.banana.service;
 import com.ottention.banana.dto.response.businesscard.CategoryResponse;
 import com.ottention.banana.entity.Category;
 import com.ottention.banana.repository.CategoryRepository;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,6 +27,7 @@ public class CategoryService {
     }
 
     public String getCategoryName(long categoryId) {
-        return categoryRepository.findById(categoryId).get().getCategoryName();
+        Category category = categoryRepository.findById(categoryId).orElseThrow(EntityNotFoundException::new);
+        return category.getCategoryName();
     }
 }
