@@ -2,6 +2,7 @@ package com.ottention.banana.dto.response.businesscard;
 
 import com.ottention.banana.dto.BusinessCardContentDto;
 import com.ottention.banana.entity.BusinessCardContent;
+import com.ottention.banana.entity.Image;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -15,12 +16,12 @@ public class BusinessCardResponse {
     private final List<BusinessCardContentDto> contents;
     private final List<ImageResponse> images;
 
-    public static BusinessCardResponse toBusinessCard(List<BusinessCardContent> businessCardContents, List<String> imageUrls) {
+    public static BusinessCardResponse toBusinessCard(List<BusinessCardContent> businessCardContents, List<Image> images) {
         return BusinessCardResponse.builder()
                 .contents(businessCardContents.stream().map(c ->
                         BusinessCardContentDto.toContent(c))
                         .collect(toList()))
-                .images(imageUrls.stream().map(i -> new ImageResponse(i))
+                .images(images.stream().map(i -> new ImageResponse(i.getImageUrl(), i.getCoordinate()))
                         .collect(toList()))
                 .build();
     }
