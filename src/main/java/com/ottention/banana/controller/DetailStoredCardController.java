@@ -5,48 +5,51 @@ import com.ottention.banana.dto.response.businesscard.NoteResponse;
 import com.ottention.banana.service.BusinessCardService;
 import com.ottention.banana.service.wallet.DetailStoredBusinessCardService;
 import com.ottention.banana.service.wallet.NoteService;
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
+@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 @RequestMapping("banana/wallet")
 public class DetailStoredCardController {
 
-    private final DetailStoredBusinessCardService detailStoredCardService;
-    private final NoteService noteService;
+    DetailStoredBusinessCardService detailStoredCardService;
+    NoteService noteService;
 
     //보관함 명함 (상세 - 앞)
+    @ResponseStatus(HttpStatus.OK)
     @GetMapping("/{storedCardId}/front")
-    public ResponseEntity<BusinessCardResponse> getFront(
+    public BusinessCardResponse getFront(
             @PathVariable Long storedCardId,
             @PageableDefault(sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
-        return ResponseEntity.ok(detailStoredCardService.findStoredBusinessCardFront(storedCardId, pageable));
+        return detailStoredCardService.findStoredBusinessCardFront(storedCardId);
     }
 
     //보관함 명함 (상세 - 뒤)
-    @GetMapping("/{storedCardId}/front")
-    public ResponseEntity<BusinessCardResponse> getBack(
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/{storedCardId}/back")
+    public BusinessCardResponse getBack(
             @PathVariable Long storedCardId,
             @PageableDefault(sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
-        return ResponseEntity.ok(detailStoredCardService.findStoredBusinessCardFront(storedCardId, pageable));
+        return detailStoredCardService.findStoredBusinessCardBack(storedCardId);
     }
 
     //작성노트
+    @ResponseStatus(HttpStatus.OK)
     @GetMapping("/{storedCardId}/notes")
-    public ResponseEntity<List<NoteResponse>> getNote(
+    public List<NoteResponse> getNote(
             @PathVariable Long storedCardId,
             @PageableDefault(sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
-        return ResponseEntity.ok(noteService.findAll(storedCardId, pageable));
+        return noteService.findAll(storedCardId, pageable);
     }
-
 }
