@@ -4,7 +4,7 @@ import com.ottention.banana.config.Login;
 import com.ottention.banana.dto.request.LoginUser;
 import com.ottention.banana.dto.response.businesscard.StoredCardResponse;
 import com.ottention.banana.service.CategoryService;
-import com.ottention.banana.service.StoredBusinessCardService;
+import com.ottention.banana.service.wallet.StoredBusinessCardService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
