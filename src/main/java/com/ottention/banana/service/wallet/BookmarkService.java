@@ -1,4 +1,4 @@
-package com.ottention.banana.service;
+package com.ottention.banana.service.wallet;
 
 import com.ottention.banana.entity.StoredBusinessCard;
 import com.ottention.banana.repository.StoredBusinessCardRepository;

@@ -1,4 +1,4 @@
-package com.ottention.banana.service;
+package com.ottention.banana.service.wallet;
 
 import com.ottention.banana.dto.response.businesscard.StoredCardContentResponse;
 import com.ottention.banana.dto.response.businesscard.StoredCardResponse;
