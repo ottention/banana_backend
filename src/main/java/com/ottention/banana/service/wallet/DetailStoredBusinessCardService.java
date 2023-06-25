@@ -17,7 +17,7 @@ public class DetailStoredBusinessCardService {
     private final StoredBusinessCardRepository storedCardRepository;
     private final BusinessCardService businessCardService;
 
-    public BusinessCardResponse findStoredBusinessCardFront(Long id, Pageable pageable) {
+    public BusinessCardResponse findStoredBusinessCardFront(Long id) {
         return businessCardService.getFrontBusinessCard(getBusinessCardId(id));
     }
 
