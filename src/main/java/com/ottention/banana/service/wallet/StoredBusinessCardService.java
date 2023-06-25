@@ -26,8 +26,8 @@ public class StoredBusinessCardService {
 
 
     //저장된 명함 조회
-    public List<StoredCardResponse> getAllStoredBusinessCards(Long id) {
-        List<StoredBusinessCard> storedBusinessCards = storedCardRepository.findAllByUserIdOrderByModifiedDateDesc(id);
+    public List<StoredCardResponse> getAllStoredBusinessCards(Long id, Pageable pageable) {
+        List<StoredBusinessCard> storedBusinessCards = storedCardRepository.findAllByUserId(id, pageable);
         return getRequestedStoredCards(storedBusinessCards);
     }
 
@@ -39,13 +39,13 @@ public class StoredBusinessCardService {
 
     //즐겨찾기 전체 조회
     public List<StoredCardResponse> getBookmarkedStoredCards(Long id, Pageable pageable) {
-        List<StoredBusinessCard> storedBusinessCards = storedCardRepository.findAllByUserIdAndIsBookmarkedTrueOrderByModifiedDateDesc(id, pageable);
+        List<StoredBusinessCard> storedBusinessCards = storedCardRepository.findAllByUserIdAndIsBookmarkedTrue(id, pageable);
         return getRequestedStoredCards(storedBusinessCards);
     }
 
     //카테고리별 명함
     public List<StoredCardResponse> getStoredCardByCategory(long categoryId, Pageable pageable) {
-        List<StoredBusinessCard> storedBusinessCards = storedCardRepository.findAllByCategoryIdOrderByModifiedDateDesc(categoryId, pageable);
+        List<StoredBusinessCard> storedBusinessCards = storedCardRepository.findAllByCategoryId(categoryId, pageable);
         return getRequestedStoredCards(storedBusinessCards);
     }
 
