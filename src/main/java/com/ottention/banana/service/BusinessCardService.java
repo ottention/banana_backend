@@ -2,7 +2,9 @@ package com.ottention.banana.service;
 
 import com.ottention.banana.dto.request.SaveBackBusinessCardRequest;
 import com.ottention.banana.dto.request.SaveFrontBusinessCardRequest;
+import com.ottention.banana.dto.request.SaveTagRequest;
 import com.ottention.banana.dto.response.businesscard.BusinessCardResponse;
+import com.ottention.banana.dto.response.businesscard.TagResponse;
 import com.ottention.banana.entity.BusinessCard;
 import com.ottention.banana.entity.BusinessCardContent;
 import com.ottention.banana.entity.Image;
@@ -12,23 +14,22 @@ import com.ottention.banana.exception.UserNotFound;
 import com.ottention.banana.repository.BusinessCardRepository;
 import com.ottention.banana.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
-@Slf4j
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class BusinessCardService {
 
     private final BusinessCardContentService businessCardContentService;
+    private final ImageService imageService;
+    private final TagService tagService;
     private final BusinessCardRepository businessCardRepository;
     private final UserRepository userRepository;
-    private final ImageService imageService;
 
     /**
      * @param userId
@@ -40,7 +41,7 @@ public class BusinessCardService {
      */
     @Transactional
     public Long save(Long userId, SaveFrontBusinessCardRequest frontRequest, SaveBackBusinessCardRequest backRequest,
-                     List<MultipartFile> frontImages, List<MultipartFile> backImages) {
+                     List<MultipartFile> frontImages, List<MultipartFile> backImages, SaveTagRequest tagRequest) {
         User findUser = userRepository.findById(userId)
                 .orElseThrow(UserNotFound::new);
 
@@ -53,6 +54,7 @@ public class BusinessCardService {
         businessCardContentService.saveBusinessCardContents(frontRequest, backRequest, businessCard);
         imageService.saveBusinessCardImages(frontRequest.getFrontImageCoordinates(), backRequest.getBackImageCoordinates(),
                 frontImages, backImages, businessCard);
+        tagService.saveTag(tagRequest, businessCard);
 
         return businessCardRepository.save(businessCard).getId();
     }
@@ -82,10 +84,10 @@ public class BusinessCardService {
                 .orElseThrow(BusinessCardNotFound::new);
 
         List<Image> images = imageService.findByBusinessCardIdAndIsFront(businessCard.getId(), isFront);
-        List<String> imageUrls = imageService.getImageUrls(images);
         List<BusinessCardContent> contents = businessCardContentService.findByBusinessCardIdAndIsFront(businessCard.getId(), isFront);
+        List<TagResponse> tags = tagService.getTags(businessCard.getId());
 
-        return BusinessCardResponse.toBusinessCard(contents, images);
+        return BusinessCardResponse.toBusinessCard(contents, images, tags);
     }
 
 }
