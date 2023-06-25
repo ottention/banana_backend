@@ -1,6 +1,6 @@
 package com.ottention.banana.controller;
 
-import com.ottention.banana.service.BookmarkService;
+import com.ottention.banana.service.wallet.BookmarkService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
