@@ -2,6 +2,7 @@ package com.ottention.banana.controller;
 
 import com.ottention.banana.dto.response.businesscard.BusinessCardResponse;
 import com.ottention.banana.dto.response.businesscard.NoteResponse;
+import com.ottention.banana.dto.response.businesscard.StoredBusinessCardResponse;
 import com.ottention.banana.service.BusinessCardService;
 import com.ottention.banana.service.wallet.DetailStoredBusinessCardService;
 import com.ottention.banana.service.wallet.NoteService;
@@ -29,19 +30,19 @@ public class DetailStoredCardController {
     //보관함 명함 (상세 - 앞)
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/{storedCardId}/front")
-    public BusinessCardResponse getFront(
+    public StoredBusinessCardResponse getFront(
             @PathVariable Long storedCardId,
-            @PageableDefault(sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
-        return detailStoredCardService.findStoredBusinessCardFront(storedCardId);
+            @PageableDefault(sort = "createdDate", direction = Sort.Direction.DESC) Pageable pageable) {
+        return detailStoredCardService.findStoredBusinessCard(storedCardId, true);
     }
 
     //보관함 명함 (상세 - 뒤)
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/{storedCardId}/back")
-    public BusinessCardResponse getBack(
+    public StoredBusinessCardResponse getBack(
             @PathVariable Long storedCardId,
-            @PageableDefault(sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
-        return detailStoredCardService.findStoredBusinessCardBack(storedCardId);
+            @PageableDefault(sort = "createdDate", direction = Sort.Direction.DESC) Pageable pageable) {
+        return detailStoredCardService.findStoredBusinessCard(storedCardId, false);
     }
 
     //작성노트
@@ -49,7 +50,7 @@ public class DetailStoredCardController {
     @GetMapping("/{storedCardId}/notes")
     public List<NoteResponse> getNote(
             @PathVariable Long storedCardId,
-            @PageableDefault(sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
+            @PageableDefault(sort = "createdDate", direction = Sort.Direction.DESC) Pageable pageable) {
         return noteService.findAll(storedCardId, pageable);
     }
 }
