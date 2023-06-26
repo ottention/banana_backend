@@ -1,6 +1,7 @@
 package com.ottention.banana.dto.request;
 
 import com.ottention.banana.dto.BusinessCardContentDto;
+import com.ottention.banana.entity.Coordinate;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -12,5 +13,6 @@ public class SaveFrontBusinessCardRequest {
     private Boolean isPublic;
     private Boolean isPresent;
     private List<BusinessCardContentDto> contents;
+    private List<Coordinate> frontImageCoordinates;
 
 }

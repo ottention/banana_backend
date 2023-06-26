@@ -191,7 +191,7 @@ class GuestBookControllerTest {
         guestBookRepository.saveAll(guestBooks);
 
         //expected
-        mockMvc.perform(RestDocumentationRequestBuilders.get("/banana/myWrittenGuestBooks?page=1&sort=id,desc")
+        mockMvc.perform(RestDocumentationRequestBuilders.get("/banana/myWrittenGuestBooks?page=0g&sort=id,desc")
                         .contentType(APPLICATION_JSON)
                         .header("Authorization", accessToken))
                 .andExpect(status().isOk())
@@ -238,7 +238,7 @@ class GuestBookControllerTest {
         guestBookRepository.saveAll(guestBooks);
 
         //expected
-        mockMvc.perform(get("/banana/businessCard/{businessCardId}/guestBook?page=1&sort=id,desc", businessCard.getId())
+        mockMvc.perform(get("/banana/businessCard/{businessCardId}/guestBook?page=0&sort=id,desc", businessCard.getId())
                         .contentType(APPLICATION_JSON)
                         .header("Authorization", accessToken))
                 .andExpect(jsonPath("$[0].content").value("방명록 내용19"))
