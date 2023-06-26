@@ -3,7 +3,7 @@ package com.ottention.banana.controller;
 import com.ottention.banana.config.Login;
 import com.ottention.banana.dto.request.LoginUser;
 import com.ottention.banana.dto.response.businesscard.CategoryResponse;
-import com.ottention.banana.dto.response.businesscard.StoredCardResponse;
+import com.ottention.banana.dto.response.businesscard.StoredBusinessCardResponse;
 import com.ottention.banana.service.CategoryService;
 import com.ottention.banana.service.wallet.StoredBusinessCardService;
 import lombok.AccessLevel;
@@ -33,21 +33,21 @@ public class WalletController {
     //북마크된 명함 두 개
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/two-bookmarked-cards")
-    public List<StoredCardResponse> getTwoBookmarkedCards(@Login LoginUser user) {
+    public List<StoredBusinessCardResponse> getTwoBookmarkedCards(@Login LoginUser user) {
         return storedBusinessCardService.getTwoBookmarkedCards(user.getId());
     }
 
     //전체명함
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("")
-    public List<StoredCardResponse> getAllStoredCards(@Login LoginUser user, @PageableDefault(sort = "modifiedDate", direction = DESC) Pageable pageable) {
+    public List<StoredBusinessCardResponse> getAllStoredCards(@Login LoginUser user, @PageableDefault(sort = "modifiedDate", direction = DESC) Pageable pageable) {
         return storedBusinessCardService.getAllStoredBusinessCards(user.getId(), pageable);
     }
 
     //북마크
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/bookmark")
-    public List<StoredCardResponse> getBookmarkedStoredBusinessCards(@Login LoginUser user, @PageableDefault(sort = "modifiedDate", direction = DESC) Pageable pageable) {
+    public List<StoredBusinessCardResponse> getBookmarkedStoredBusinessCards(@Login LoginUser user, @PageableDefault(sort = "modifiedDate", direction = DESC) Pageable pageable) {
         return storedBusinessCardService.getBookmarkedStoredCards(user.getId(), pageable);
     }
 

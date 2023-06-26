@@ -19,7 +19,7 @@ public class NoteService {
     private final NoteMapper noteMapper;
 
     public List<NoteResponse> findAll(Long param, Pageable pageable) {
-        List<Note> notes = noteRepository.findAllBy(param, pageable);
+        List<Note> notes = noteRepository.findAllByStoredBusinessCardId(param, pageable);
         return notes.stream().map(noteMapper::toResponse).toList();
     }
 }

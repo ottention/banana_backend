@@ -13,7 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class BookmarkService {
 
     private final StoredBusinessCardRepository repository;
-    
+
     @Transactional
     public void modifyBookmark(Long storedCardId, Boolean isBookmarked) {
         StoredBusinessCard target = repository.findById(storedCardId).orElseThrow(EntityNotFoundException::new);
