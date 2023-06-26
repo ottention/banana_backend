@@ -1,6 +1,5 @@
 package com.ottention.banana.dto.response.businesscard;
 
-import com.ottention.banana.entity.Note;
 import lombok.*;
 
 @Getter
