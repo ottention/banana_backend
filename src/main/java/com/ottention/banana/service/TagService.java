@@ -5,6 +5,7 @@ import com.ottention.banana.dto.response.businesscard.TagResponse;
 import com.ottention.banana.entity.BusinessCard;
 import com.ottention.banana.entity.BusinessCardTag;
 import com.ottention.banana.entity.Tag;
+import com.ottention.banana.exception.TagLimitExceededException;
 import com.ottention.banana.repository.BusinessCardTagRepository;
 import com.ottention.banana.repository.TagRepository;
 import lombok.RequiredArgsConstructor;
@@ -25,11 +26,16 @@ public class TagService {
     @Transactional
     public void saveTag(SaveTagRequest request, BusinessCard businessCard) {
         List<String> tags = request.getTags();
+
+        if (tags.size() > 10) {
+            throw new TagLimitExceededException();
+        }
+
         for (String tag : tags) {
             BusinessCardTag businessCardTag = new BusinessCardTag();
             Tag createdTag = new Tag();
 
-            createdTag.updateName(tag);
+            createdTag.updateName(tag.replaceAll("\\s", ""));
             createdTag.addTag(businessCardTag, businessCard);
 
             businessCardTagRepository.save(businessCardTag);
