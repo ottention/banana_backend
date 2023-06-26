@@ -62,25 +62,25 @@ public class BusinessCardService {
     /**
      * 명함 앞 데이터 가져오기
      */
-    public BusinessCardResponse getFrontBusinessCard(Long id) {
-        return getBusinessCardResponse(id, true);
+    public BusinessCardResponse getFrontBusinessCard(Long businessCardId) {
+        return getBusinessCardResponse(businessCardId, true);
     }
 
     /**
      * 명함 뒤 데이터 가져오기
      */
-    public BusinessCardResponse getBackBusinessCard(Long id) {
-        return getBusinessCardResponse(id, false);
+    public BusinessCardResponse getBackBusinessCard(Long businessCardId) {
+        return getBusinessCardResponse(businessCardId, false);
     }
 
     /**
      * 명함 데이터 가져오기
-     * @param id : 어떤 명함 데이터 가져올건지
+     * @param businessCardId : 어떤 명함 데이터 가져올건지
      * @param isFront : 앞 뒤 구분을 위한 파라미터
      * @return
      */
-    private BusinessCardResponse getBusinessCardResponse(Long id, boolean isFront) {
-        BusinessCard businessCard = businessCardRepository.findById(id)
+    private BusinessCardResponse getBusinessCardResponse(Long businessCardId, boolean isFront) {
+        BusinessCard businessCard = businessCardRepository.findById(businessCardId)
                 .orElseThrow(BusinessCardNotFound::new);
 
         List<Image> images = imageService.findByBusinessCardIdAndIsFront(businessCard.getId(), isFront);
