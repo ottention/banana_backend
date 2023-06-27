@@ -1,0 +1,27 @@
+# QRCode API
+
+요청 시 Host는 BaseUrl로 변경, Authorization에 들어가는 토큰 값도 유효한 토큰으로 요청해야함
+
+## IMAGE.PNG
+
+### 요청
+include::{snippets}/qrCode-getV1/http-request.adoc[]
+
+### 응답
+include::{snippets}/qrCode-getV1/http-response.adoc[]
+
+## 바이트 배열
+
+### 요청
+include::{snippets}/qrCode-getV2/http-request.adoc[]
+
+### 응답
+include::{snippets}/qrCode-getV2/http-response.adoc[]
+
+## String
+
+### 요청
+include::{snippets}/qrCode-getV3/http-request.adoc[]
+
+### 응답
+include::{snippets}/qrCode-getV3/http-response.adoc[]
