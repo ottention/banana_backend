@@ -38,13 +38,6 @@ class TagServiceTest {
     @Autowired
     private TagService tagService;
 
-    @BeforeEach
-    void clean() {
-        businessCardRepository.deleteAll();
-        tagRepository.deleteAll();
-        userRepository.deleteAll();
-    }
-
     @Test
     @DisplayName("태그 저장 테스트")
     void saveTagTest() {

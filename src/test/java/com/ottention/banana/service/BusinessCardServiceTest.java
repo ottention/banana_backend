@@ -50,16 +50,6 @@ class BusinessCardServiceTest {
     @Autowired
     private BusinessCardService businessCardService;
 
-    @BeforeEach
-    void clean() {
-        tagRepository.deleteAll();
-        businessCardTagRepository.deleteAll();
-        imageRepository.deleteAll();
-        businessCardContentRepository.deleteAll();
-        businessCardRepository.deleteAll();
-        userRepository.deleteAll();
-    }
-
     @Test
     @DisplayName("명함 제작 테스트")
     void saveBusinessCardTest() {
