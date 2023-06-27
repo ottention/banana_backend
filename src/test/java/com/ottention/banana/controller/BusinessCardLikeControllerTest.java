@@ -79,7 +79,7 @@ class BusinessCardLikeControllerTest {
         mockMvc.perform(post("/businessCard/{businessCardId}/like", businessCard.getId())
                         .header("Authorization", accessToken))
                 .andExpect(status().isOk())
-                .andDo(document("like"));
+                .andDo(document("businessCardLike"));
     }
 
     @Test
