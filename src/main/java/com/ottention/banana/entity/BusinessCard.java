@@ -40,7 +40,7 @@ public class BusinessCard extends BaseEntity {
         this.qrCode = qrCode;
     }
 
-    public void updateLikeCount(int likeCount) {
-        this.likeCount = likeCount;
+    public int updateLikeCount(int likeCount) {
+        return this.likeCount = likeCount;
     }
 }
