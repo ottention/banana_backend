@@ -2,6 +2,7 @@ package com.ottention.banana.controller;
 
 import com.ottention.banana.config.Login;
 import com.ottention.banana.dto.request.LoginUser;
+import com.ottention.banana.dto.response.businesscard.CategoryCardsResponse;
 import com.ottention.banana.dto.response.businesscard.CategoryResponse;
 import com.ottention.banana.dto.response.businesscard.StoredBusinessCardResponse;
 import com.ottention.banana.service.CategoryService;
@@ -61,10 +62,7 @@ public class WalletController {
     //카테고리 - 상세
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/categories/{categoryId}")
-    public ResponseEntity<Map<String, Object>> getStoredCardByCategory(@PathVariable long categoryId, @PageableDefault(sort = "modifiedDate", direction = DESC) Pageable pageable) {
-        Map<String, Object> result = new HashMap<>();
-        result.put("storedCards", storedBusinessCardService.getStoredCardByCategory(categoryId, pageable));
-        result.put("categoryName", categoryService.getCategoryName(categoryId));
-        return ResponseEntity.ok(result);
+    public CategoryCardsResponse getStoredCardByCategory(@PathVariable Long categoryId, @PageableDefault(sort = "modifiedDate", direction = DESC) Pageable pageable) {
+        return categoryService.getCategoryCards(categoryId, pageable);
     }
 }
