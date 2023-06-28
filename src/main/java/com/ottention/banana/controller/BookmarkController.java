@@ -17,7 +17,7 @@ public class BookmarkController {
 
     //즐겨찾기 등록 해제
     @PostMapping("/categories/{categoryId}/bookmark/{cardId}")
-    @ResponseStatus(HttpStatus.OK)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void patch(@PathVariable Long cardId, @RequestParam("isBookmarked") Boolean isBookmarked) {
         bookmarkService.modifyBookmark(cardId, isBookmarked);
     }
