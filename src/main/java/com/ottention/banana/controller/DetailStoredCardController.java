@@ -29,28 +29,35 @@ public class DetailStoredCardController {
 
     //보관함 명함 (상세 - 앞)
     @ResponseStatus(HttpStatus.OK)
-    @GetMapping("/{storedCardId}/front")
+    @GetMapping("/{id}/front")
     public StoredBusinessCardResponse getFront(
-            @PathVariable Long storedCardId,
+            @PathVariable Long id,
             @PageableDefault(sort = "createdDate", direction = Sort.Direction.DESC) Pageable pageable) {
-        return detailStoredCardService.findStoredBusinessCard(storedCardId, true);
+        return detailStoredCardService.findStoredBusinessCard(id, true);
     }
 
     //보관함 명함 (상세 - 뒤)
     @ResponseStatus(HttpStatus.OK)
-    @GetMapping("/{storedCardId}/back")
+    @GetMapping("/{id}/back")
     public StoredBusinessCardResponse getBack(
-            @PathVariable Long storedCardId,
+            @PathVariable Long id,
             @PageableDefault(sort = "createdDate", direction = Sort.Direction.DESC) Pageable pageable) {
-        return detailStoredCardService.findStoredBusinessCard(storedCardId, false);
+        return detailStoredCardService.findStoredBusinessCard(id, false);
     }
 
     //작성노트
     @ResponseStatus(HttpStatus.OK)
-    @GetMapping("/{storedCardId}/notes")
+    @GetMapping("/{id}/notes")
     public List<NoteResponse> getNote(
-            @PathVariable Long storedCardId,
+            @PathVariable Long id,
             @PageableDefault(sort = "createdDate", direction = Sort.Direction.DESC) Pageable pageable) {
-        return noteService.findAll(storedCardId, pageable);
+        return noteService.findAll(id, pageable);
+    }
+
+    //저장 명함 삭제
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @DeleteMapping("/{id}")
+    public void delete(@PathVariable Long id) {
+        detailStoredCardService.delete(id);
     }
 }

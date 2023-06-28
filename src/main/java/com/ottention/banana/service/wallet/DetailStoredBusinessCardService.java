@@ -34,4 +34,9 @@ public class DetailStoredBusinessCardService {
                 .tags(tagService.getTags(storedCard.getBusinessCard().getId()))
                 .build();
     }
+
+    @Transactional
+    public void delete(Long id) {
+        storedCardRepository.deleteById(id);
+    }
 }
