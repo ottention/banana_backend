@@ -38,7 +38,7 @@ public class StoredBusinessCardService {
     }
 
     //카테고리별 명함
-    public List<StoredBusinessCardResponse> getStoredCardByCategory(long categoryId, Pageable pageable) {
+    public List<StoredBusinessCardResponse> getStoredCardByCategory(Long categoryId, Pageable pageable) {
         List<StoredBusinessCard> storedBusinessCards = storedCardRepository.findAllByCategoryId(categoryId, pageable);
         return toResponseList(storedBusinessCards);
     }
