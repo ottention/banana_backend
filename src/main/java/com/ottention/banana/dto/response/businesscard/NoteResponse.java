@@ -5,7 +5,7 @@ import lombok.*;
 @Getter
 @Builder
 @AllArgsConstructor
-public class CategoryResponse {
+public class NoteResponse {
     private Long id;
-    private String categoryName;
+    private String content;
 }
