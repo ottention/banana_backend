@@ -9,9 +9,9 @@ import java.util.List;
 
 @Repository
 public interface StoredBusinessCardRepository extends JpaRepository<StoredBusinessCard, Long> {
-    List<StoredBusinessCard> findAllByUserIdOrderByModifiedDateDesc(Long userId);
+    List<StoredBusinessCard> findAllByUserId(Long userId, Pageable pageable);
     List<StoredBusinessCard> findTop2ByUserIdOrderByModifiedDateDesc(Long userId);
-    List<StoredBusinessCard> findAllByUserIdAndIsBookmarkedTrueOrderByModifiedDateDesc(Long userId, Pageable pageable);
-    List<StoredBusinessCard> findAllByCategoryIdOrderByModifiedDateDesc(Long categoryId, Pageable pageable);
+    List<StoredBusinessCard> findAllByUserIdAndIsBookmarkedTrue(Long userId, Pageable pageable);
+    List<StoredBusinessCard> findAllByCategoryId(Long categoryId, Pageable pageable);
 }
 
