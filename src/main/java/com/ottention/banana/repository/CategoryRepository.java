@@ -1,6 +1,6 @@
 package com.ottention.banana.repository;
 
-import com.ottention.banana.entity.Category;
+import com.ottention.banana.entity.wallet.Category;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
