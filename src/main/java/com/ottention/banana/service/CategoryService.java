@@ -2,7 +2,7 @@ package com.ottention.banana.service;
 
 import com.ottention.banana.dto.response.businesscard.CategoryCardsResponse;
 import com.ottention.banana.dto.response.businesscard.CategoryResponse;
-import com.ottention.banana.entity.Category;
+import com.ottention.banana.entity.wallet.Category;
 import com.ottention.banana.mapper.CategoryCardsMapper;
 import com.ottention.banana.mapper.CategoryMapper;
 import com.ottention.banana.repository.CategoryRepository;

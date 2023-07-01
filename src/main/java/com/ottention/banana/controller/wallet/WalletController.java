@@ -1,4 +1,4 @@
-package com.ottention.banana.controller;
+package com.ottention.banana.controller.wallet;
 
 import com.ottention.banana.config.Login;
 import com.ottention.banana.dto.request.LoginUser;
@@ -27,7 +27,6 @@ import static org.springframework.data.domain.Sort.Direction.DESC;
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 @RequestMapping("/banana/wallet")
 public class WalletController {
-
     StoredBusinessCardService storedBusinessCardService;
     CategoryService categoryService;
 

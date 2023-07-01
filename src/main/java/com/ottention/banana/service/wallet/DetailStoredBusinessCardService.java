@@ -1,7 +1,7 @@
 package com.ottention.banana.service.wallet;
 
 import com.ottention.banana.dto.response.businesscard.StoredBusinessCardResponse;
-import com.ottention.banana.entity.StoredBusinessCard;
+import com.ottention.banana.entity.wallet.StoredBusinessCard;
 import com.ottention.banana.repository.StoredBusinessCardRepository;
 import com.ottention.banana.service.BusinessCardContentService;
 import com.ottention.banana.service.ImageService;

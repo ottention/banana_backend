@@ -1,4 +1,4 @@
-package com.ottention.banana.controller;
+package com.ottention.banana.controller.wallet;
 
 import com.ottention.banana.service.wallet.BookmarkService;
 import lombok.AccessLevel;
