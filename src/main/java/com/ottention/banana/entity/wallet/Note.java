@@ -1,5 +1,6 @@
-package com.ottention.banana.entity;
+package com.ottention.banana.entity.wallet;
 
+import com.ottention.banana.entity.BaseEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
@@ -24,4 +25,9 @@ public class Note extends BaseEntity {
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "stored_business_card_id")
     private StoredBusinessCard storedBusinessCard;
+
+    public Note(String content, StoredBusinessCard storedBusinessCard) {
+        this.content = content;
+        this.storedBusinessCard = storedBusinessCard;
+    }
 }

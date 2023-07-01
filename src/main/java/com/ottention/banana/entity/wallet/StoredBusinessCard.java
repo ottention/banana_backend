@@ -1,5 +1,9 @@
-package com.ottention.banana.entity;
+package com.ottention.banana.entity.wallet;
 
+import com.ottention.banana.entity.BaseEntity;
+import com.ottention.banana.entity.BusinessCard;
+import com.ottention.banana.entity.User;
+import com.ottention.banana.entity.wallet.Category;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
