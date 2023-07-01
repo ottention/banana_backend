@@ -1,7 +1,7 @@
 package com.ottention.banana.mapper;
 
 import com.ottention.banana.dto.response.businesscard.CategoryResponse;
-import com.ottention.banana.entity.Category;
+import com.ottention.banana.entity.wallet.Category;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingConstants;
 
