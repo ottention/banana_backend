@@ -3,12 +3,9 @@ package com.ottention.banana.dto.response.businesscard;
 import com.ottention.banana.dto.BusinessCardContentDto;
 import com.ottention.banana.entity.BusinessCardContent;
 import com.ottention.banana.entity.Image;
-import com.ottention.banana.entity.StoredBusinessCard;
 import lombok.*;
 
 import java.util.List;
-
-import static java.util.stream.Collectors.toList;
 
 @Getter
 @NoArgsConstructor
