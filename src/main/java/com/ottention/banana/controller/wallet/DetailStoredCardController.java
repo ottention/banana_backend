@@ -1,9 +1,6 @@
-package com.ottention.banana.controller;
+package com.ottention.banana.controller.wallet;
 
-import com.ottention.banana.dto.response.businesscard.BusinessCardResponse;
-import com.ottention.banana.dto.response.businesscard.NoteResponse;
 import com.ottention.banana.dto.response.businesscard.StoredBusinessCardResponse;
-import com.ottention.banana.service.BusinessCardService;
 import com.ottention.banana.service.wallet.DetailStoredBusinessCardService;
 import com.ottention.banana.service.wallet.NoteService;
 import lombok.AccessLevel;
@@ -13,10 +10,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -43,15 +37,6 @@ public class DetailStoredCardController {
             @PathVariable Long id,
             @PageableDefault(sort = "createdDate", direction = Sort.Direction.DESC) Pageable pageable) {
         return detailStoredCardService.findStoredBusinessCard(id, false);
-    }
-
-    //작성노트
-    @ResponseStatus(HttpStatus.OK)
-    @GetMapping("/{id}/notes")
-    public List<NoteResponse> getNote(
-            @PathVariable Long id,
-            @PageableDefault(sort = "createdDate", direction = Sort.Direction.DESC) Pageable pageable) {
-        return noteService.findAll(id, pageable);
     }
 
     //저장 명함 삭제
