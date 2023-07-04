@@ -2,6 +2,7 @@ package com.ottention.banana.controller;
 
 import com.ottention.banana.config.Login;
 import com.ottention.banana.dto.request.*;
+import com.ottention.banana.dto.response.QRCodeAddressResponse;
 import com.ottention.banana.dto.response.businesscard.BusinessCardIdResponse;
 import com.ottention.banana.dto.response.businesscard.BusinessCardResponse;
 import com.ottention.banana.dto.response.businesscard.BusinessCardSettingStatus;
@@ -39,7 +40,7 @@ public class BusinessCardController {
     }
 
     @GetMapping("/businessCard/{businessCardId}/qrcode")
-    public String getQRCodeV3(@PathVariable Long businessCardId) {
+    public QRCodeAddressResponse getQRCodeV3(@PathVariable Long businessCardId) {
         return qrCodeService.getQRCodeAddress(businessCardId);
     }
 
