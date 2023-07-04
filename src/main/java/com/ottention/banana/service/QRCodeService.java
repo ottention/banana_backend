@@ -4,6 +4,7 @@ import com.google.zxing.WriterException;
 import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
+import com.ottention.banana.dto.response.QRCodeAddressResponse;
 import com.ottention.banana.entity.BusinessCard;
 import com.ottention.banana.entity.QRCode;
 import com.ottention.banana.exception.BusinessCardNotFound;
@@ -55,13 +56,12 @@ public class QRCodeService {
         return qrCodeRepository.save(qrCode).getId();
     }
 
-    public byte[] getQrCodeImageById(Long businessCardId) {
+    public QRCodeAddressResponse getQRCodeAddress(Long businessCardId) {
         BusinessCard businessCard = businessCardRepository.findById(businessCardId)
                 .orElseThrow(BusinessCardNotFound::new);
 
         QRCode qrCode = businessCard.getQrCode();
-
-        return qrCode.getQrCodeImage();
+        return new QRCodeAddressResponse(qrCode.getBusinessCardAddress());
     }
 
 }
