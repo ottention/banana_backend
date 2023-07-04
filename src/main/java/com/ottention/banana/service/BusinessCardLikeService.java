@@ -1,5 +1,6 @@
 package com.ottention.banana.service;
 
+import com.ottention.banana.dto.response.businesscard.BusinessCardLikeResponse;
 import com.ottention.banana.entity.BusinessCard;
 import com.ottention.banana.entity.BusinessCardLike;
 import com.ottention.banana.entity.User;
@@ -24,7 +25,7 @@ public class BusinessCardLikeService {
     private final BusinessCardRepository businessCardRepository;
     private final UserRepository userRepository;
 
-    public int like(Long userId, Long businessCardId) {
+    public BusinessCardLikeResponse like(Long userId, Long businessCardId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(UserNotFound::new);
 
@@ -41,16 +42,16 @@ public class BusinessCardLikeService {
 
         businessCardLikeRepository.save(like);
 
-        return businessCard.getLikeCount();
+        return new BusinessCardLikeResponse(businessCard.getLikeCount(), true);
     }
 
-    public int cancelLike(Long userId, Long businessCardId) {
+    public BusinessCardLikeResponse cancelLike(Long userId, Long businessCardId) {
         BusinessCardLike businessCardLike = businessCardLikeRepository.findByUserIdAndBusinessCardId(userId, businessCardId)
                 .orElseThrow(ZeroLikesError::new);
 
         businessCardLikeRepository.delete(businessCardLike);
 
-        return businessCardLike.cancelLike();
+        return new BusinessCardLikeResponse(businessCardLike.cancelLike(), false);
     }
 
 }
