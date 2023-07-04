@@ -1,39 +1,58 @@
 package com.ottention.banana.dto.response.businesscard;
 
 import com.ottention.banana.dto.BusinessCardContentDto;
-import com.ottention.banana.entity.BusinessCardContent;
-import com.ottention.banana.entity.Image;
+import com.ottention.banana.dto.LinkDto;
+import com.ottention.banana.dto.ImageDto;
+import com.ottention.banana.entity.*;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
-
-import static java.util.stream.Collectors.toList;
+import java.util.stream.Collectors;
 
 @Getter
 public class BusinessCardResponse {
 
-    private final List<BusinessCardContentDto> contents;
-    private final List<ImageResponse> images;
-    private final List<TagResponse> tags;
+    private Boolean isPublic;
+    private Boolean isPresent;
 
-    public static BusinessCardResponse toBusinessCard(List<BusinessCardContent> businessCardContents, List<Image> images,
-                                                      List<TagResponse> tags) {
-        return BusinessCardResponse.builder()
-                .contents(businessCardContents.stream().map(c ->
-                        BusinessCardContentDto.toContent(c))
-                        .collect(toList()))
-                .images(images.stream().map(i -> new ImageResponse(i.getImageUrl(), i.getCoordinate()))
-                        .collect(toList()))
-                .tags(tags)
-                .build();
-    }
+    private List<BusinessCardContentDto> frontContents;
+    private List<LinkDto> frontLinks;
+    private List<ImageDto> frontImages;
+    private String frontTemplateColor;
 
-    @Builder
-    public BusinessCardResponse(List<BusinessCardContentDto> contents, List<ImageResponse> images, List<TagResponse> tags) {
-        this.contents = contents;
-        this.images = images;
-        this.tags = tags;
+    private List<BusinessCardContentDto> backContents;
+    private List<LinkDto> backLinks;
+    private List<ImageDto> backImages;
+    private String backTemplateColor;
+
+    private List<String> tags;
+
+    public BusinessCardResponse(BusinessCard businessCard, List<BusinessCardContent> frontContents,
+                                List<Link> frontLinks, List<Image> frontImages,
+                                List<BusinessCardContent> backContents,
+                                List<Link> backLinks, List<Image> backImages,
+                                List<Tag> tags
+                                ) {
+        this.isPublic = businessCard.getIsPublic();
+        this.isPresent = businessCard.getIsRepresent();
+        this.frontContents = frontContents.stream().map(c -> new BusinessCardContentDto(c))
+                .collect(Collectors.toList());
+        this.frontLinks = frontLinks.stream().map(l -> new LinkDto(l))
+                .collect(Collectors.toList());
+        this.frontImages = frontImages.stream().map(i -> new ImageDto(i))
+                .collect(Collectors.toList());
+        this.frontTemplateColor = businessCard.getFrontTemplateColor();
+        this.backContents = backContents.stream().map(c -> new BusinessCardContentDto(c))
+                .collect(Collectors.toList());
+        this.backLinks = backLinks.stream().map(l -> new LinkDto(l))
+                .collect(Collectors.toList());
+        this.backImages = backImages.stream().map(i -> new ImageDto(i))
+                .collect(Collectors.toList());
+        this.backTemplateColor = businessCard.getBackTemplateColor();
+        this.tags = tags.stream().map(t -> t.getName())
+                .collect(Collectors.toList());
     }
 
 }
