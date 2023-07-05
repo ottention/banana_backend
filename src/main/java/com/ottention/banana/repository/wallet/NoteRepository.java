@@ -1,4 +1,4 @@
-package com.ottention.banana.repository;
+package com.ottention.banana.repository.wallet;
 
 import com.ottention.banana.entity.wallet.Note;
 import org.springframework.data.domain.Pageable;

@@ -5,7 +5,7 @@ import com.ottention.banana.dto.response.businesscard.CategoryResponse;
 import com.ottention.banana.entity.wallet.Category;
 import com.ottention.banana.mapper.CategoryCardsMapper;
 import com.ottention.banana.mapper.CategoryMapper;
-import com.ottention.banana.repository.CategoryRepository;
+import com.ottention.banana.repository.wallet.CategoryRepository;
 import com.ottention.banana.service.wallet.StoredBusinessCardService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
