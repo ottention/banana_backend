@@ -21,15 +21,19 @@ public class Link {
     private String linkText;
     private Boolean isFront;
 
+    @Embedded
+    private Coordinate coordinate;
+
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "business_card_id")
     private BusinessCard businessCard;
 
     @Builder
-    public Link(String link, String linkText, Boolean isFront, BusinessCard businessCard) {
+    public Link(String link, String linkText, Boolean isFront, Coordinate coordinate, BusinessCard businessCard) {
         this.link = link;
         this.linkText = linkText;
         this.isFront = isFront;
+        this.coordinate = coordinate;
         this.businessCard = businessCard;
     }
 
