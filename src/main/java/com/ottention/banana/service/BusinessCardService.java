@@ -4,10 +4,7 @@ import com.ottention.banana.dto.request.SaveBusinessCardRequest;
 import com.ottention.banana.dto.response.businesscard.BusinessCardResponse;
 import com.ottention.banana.dto.response.businesscard.BusinessCardSettingStatus;
 import com.ottention.banana.entity.*;
-import com.ottention.banana.exception.BusinessCardLimitExceededException;
-import com.ottention.banana.exception.BusinessCardNotFound;
-import com.ottention.banana.exception.PrivateBusinessCardException;
-import com.ottention.banana.exception.UserNotFound;
+import com.ottention.banana.exception.*;
 import com.ottention.banana.repository.BusinessCardRepository;
 import com.ottention.banana.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -34,7 +31,7 @@ public class BusinessCardService {
 
     @Transactional
     public Long saveBusinessCard(Long userId, SaveBusinessCardRequest request) {
-        User findUser = userRepository.findById(userId)
+        User user = userRepository.findById(userId)
                 .orElseThrow(UserNotFound::new);
 
         List<BusinessCard> businessCards = businessCardRepository.findByUserId(userId);
@@ -49,14 +46,54 @@ public class BusinessCardService {
 
         //처음 명함은 무조건 대표 명함
         if (businessCards.size() == INITIAL_BUSINESS_CARD_COUNT) {
-            BusinessCard businessCard = createInitialBusinessCard(request, findUser);
+            BusinessCard businessCard = createInitialBusinessCard(request, user);
             return businessCardRepository.save(businessCard).getId();
         }
 
         updateRepresentativeStatus(request, businessCards);
 
-        BusinessCard businessCard = createSubsequentBusinessCard(request, findUser);
+        BusinessCard businessCard = createSubsequentBusinessCard(request, user);
         return businessCardRepository.save(businessCard).getId();
+    }
+
+    @Transactional
+    public void updateBusinessCard(Long userId, Long businessCardId, SaveBusinessCardRequest request) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(UserNotFound::new);
+
+        BusinessCard businessCard = businessCardRepository.findById(businessCardId)
+                .orElseThrow(BusinessCardNotFound::new);
+
+        validateSameUser(user, businessCard);
+
+        List<BusinessCardContent> frontContents = businessCardContentService.getFrontContents(businessCardId);
+        List<BusinessCardContent> backContents = businessCardContentService.getBackContents(businessCardId);
+        businessCardContentService.deleteBusinessCardContents(frontContents);
+        businessCardContentService.deleteBusinessCardContents(backContents);
+
+        List<Image> frontImages = imageService.getFrontImages(businessCardId);
+        List<Image> backImages = imageService.getBackImages(businessCardId);
+        imageService.deleteImages(frontImages);
+        imageService.deleteImages(backImages);
+
+        List<Link> frontLinks = linkService.getFrontLinks(businessCardId);
+        List<Link> backLinks = linkService.getBackLinks(businessCardId);
+        linkService.deleteLinks(frontLinks);
+        linkService.deleteLinks(backLinks);
+
+        List<Tag> tags = tagService.getTags(businessCardId);
+        tagService.deleteTags(tags);
+
+        businessCardContentService.saveBusinessCardContents(request, businessCard);
+        imageService.saveImage(request, businessCard);
+        linkService.saveLink(request, businessCard);
+        tagService.saveTag(request.getTags(), businessCard);
+    }
+
+    private void validateSameUser(User user, BusinessCard businessCard) {
+        if (!user.getId().equals(businessCard.getUser().getId())) {
+            throw new InvalidRequest();
+        }
     }
 
     private void updateRepresentativeStatus(SaveBusinessCardRequest request, List<BusinessCard> businessCards) {
@@ -67,21 +104,21 @@ public class BusinessCardService {
         }
     }
 
-    private BusinessCard createInitialBusinessCard(SaveBusinessCardRequest request, User findUser) {
-        return createBusinessCard(request, findUser, true);
+    private BusinessCard createInitialBusinessCard(SaveBusinessCardRequest request, User user) {
+        return createBusinessCard(request, user, true);
     }
 
-    private BusinessCard createSubsequentBusinessCard(SaveBusinessCardRequest request, User findUser) {
-        return createBusinessCard(request, findUser, request.getIsPresent());
+    private BusinessCard createSubsequentBusinessCard(SaveBusinessCardRequest request, User user) {
+        return createBusinessCard(request, user, request.getIsPresent());
     }
 
-    private BusinessCard createBusinessCard(SaveBusinessCardRequest request, User findUser, boolean isRepresent) {
+    private BusinessCard createBusinessCard(SaveBusinessCardRequest request, User user, boolean isRepresent) {
         BusinessCard businessCard = BusinessCard.builder()
                 .isPublic(request.getIsPublic())
                 .isRepresent(isRepresent)
                 .frontTemplateColor(request.getFrontTemplateColor())
                 .backTemplateColor(request.getBackTemplateColor())
-                .user(findUser)
+                .user(user)
                 .build();
 
         businessCardContentService.saveBusinessCardContents(request, businessCard);
