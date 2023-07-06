@@ -2,7 +2,6 @@ package com.ottention.banana.service;
 
 import com.ottention.banana.dto.request.SaveBusinessCardRequest;
 import com.ottention.banana.dto.ImageDto;
-import com.ottention.banana.dto.response.businesscard.ImageResponse;
 import com.ottention.banana.entity.BusinessCard;
 import com.ottention.banana.entity.Image;
 import com.ottention.banana.repository.ImageRepository;
@@ -46,6 +45,13 @@ public class ImageService {
 
     public List<Image> getBackImages(Long businessCardId) {
         return imageRepository.findByBusinessCardIdAndIsFront(businessCardId, false);
+    }
+
+    @Transactional
+    public void deleteImages(List<Image> images) {
+        for (Image image : images) {
+            imageRepository.delete(image);
+        }
     }
 
 }
