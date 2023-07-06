@@ -33,6 +33,7 @@ public class LinkService {
                     .link(frontLink.getLink())
                     .linkText(frontLink.getLinkText())
                     .businessCard(businessCard)
+                    .coordinate(frontLink.getCoordinate())
                     .build();
 
             log.info("frontLink.getIsFront()", frontLink.getIsFront());
@@ -50,6 +51,7 @@ public class LinkService {
                     .link(backLink.getLink())
                     .linkText(backLink.getLinkText())
                     .businessCard(businessCard)
+                    .coordinate(backLink.getCoordinate())
                     .build();
 
             log.info("backLink.getIsFront()", backLink.getIsFront());
@@ -66,6 +68,13 @@ public class LinkService {
 
     public List<Link> getBackLinks(Long businessCardId) {
         return linkRepository.findByBusinessCardIdAndIsFront(businessCardId, false);
+    }
+
+    @Transactional
+    public void deleteLinks(List<Link> links) {
+        for (Link link : links) {
+            linkRepository.delete(link);
+        }
     }
 
 }
