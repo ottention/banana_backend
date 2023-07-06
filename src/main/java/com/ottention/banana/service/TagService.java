@@ -50,4 +50,19 @@ public class TagService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional
+    public void deleteTags(List<Tag> tags) {
+        for (Tag tag : tags) {
+            deleteBusinessCardTags(tag);
+            tagRepository.delete(tag);
+        }
+    }
+
+    private void deleteBusinessCardTags(Tag tag) {
+        List<BusinessCardTag> businessCardTags = businessCardTagRepository.findByTagId(tag.getId());
+        for (BusinessCardTag businessCardTag : businessCardTags) {
+            businessCardTagRepository.delete(businessCardTag);
+        }
+    }
+
 }
