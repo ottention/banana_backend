@@ -29,6 +29,11 @@ public class BusinessCardController {
         return new BusinessCardIdResponse(businessCardId);
     }
 
+    @PatchMapping("/businessCard/{businessCardId}/update")
+    public void updateBusinessCard(@Login LoginUser user, @PathVariable Long businessCardId, @RequestBody SaveBusinessCardRequest request) {
+        businessCardService.updateBusinessCard(user.getId(), businessCardId, request);
+    }
+
     @GetMapping("/businessCard/representative")
     public BusinessCardSettingStatus getSettingStatusMessage(@Login LoginUser user) {
         return businessCardService.getSettingStatusMessage(user.getId());
