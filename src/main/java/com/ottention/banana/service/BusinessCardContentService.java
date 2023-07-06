@@ -34,7 +34,7 @@ public class BusinessCardContentService {
             //String -> enum으로 변경 ex h1으로 들어오면 H1으로 변경
             ContentSize contentSize = ContentSize.fromString(content.getContentSize());
 
-            BusinessCardContent businessCardContent = BusinessCardContent.updateBusinessCardContent(content.getContent(),
+            BusinessCardContent businessCardContent = BusinessCardContent.createBusinessCardContent(content.getContent(),
                     contentSize, content.getCoordinate(), content.getIsFront());
 
             businessCardContent.addBusinessCard(businessCard);
@@ -48,6 +48,13 @@ public class BusinessCardContentService {
 
     public List<BusinessCardContent> getBackContents(Long businessCardId) {
         return businessCardContentRepository.findByBusinessCardIdAndIsFront(businessCardId, false);
+    }
+
+    @Transactional
+    public void deleteBusinessCardContents(List<BusinessCardContent> businessCardContents) {
+        for (BusinessCardContent businessCardContent : businessCardContents) {
+            businessCardContentRepository.delete(businessCardContent);
+        }
     }
 
 }
