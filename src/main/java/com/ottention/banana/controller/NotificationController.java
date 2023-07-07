@@ -7,10 +7,8 @@ import com.ottention.banana.service.notification.NotificationService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 @RestController
@@ -21,7 +19,19 @@ public class NotificationController {
     NotificationService notificationService;
 
     @GetMapping(value = "/subscribe", produces = "text/event-stream")
-    public SseEmitter notification(@Login LoginUser user, @RequestHeader(value="Last-Event-ID", required = false, defaultValue = "") String lastEventId) {
+    public SseEmitter notification(@Login LoginUser user, @RequestHeader(value = "Last-Event-ID", required = false, defaultValue = "") String lastEventId) {
         return notificationService.subscribe(user.getId(), lastEventId);
+    }
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @DeleteMapping("/notifications")
+    public void deleteAll(@Login LoginUser user) {
+
+        notificationService.deleteAll(user.getId());
+    }
+
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @DeleteMapping("/notifications/{id}")
+    public void delete(@PathVariable Long id) {
+        notificationService.deleteById(id);
     }
 }
