@@ -7,4 +7,5 @@ import java.util.List;
 
 public interface BusinessCardRepository extends JpaRepository<BusinessCard, Long> {
     List<BusinessCard> findByUserId(Long userId);
+    List<BusinessCard> findTop10ByIsPublicOrderByLikeCountDesc(boolean isPublic);
 }
