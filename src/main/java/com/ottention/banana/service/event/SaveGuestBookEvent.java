@@ -17,7 +17,7 @@ public class SaveGuestBookEvent {
     private String writerNickName;
 
     public void publishEvent() {
-        String content = writerNickName + "님이 방명록을 남겼습니다.";
+        String content = writerNickName + EventContent.SAVE_GUESTBOOK_EVENT.getEventContent();
         String url = "/banana/businessCard/" + businessCardId.intValue() + "/guestBook";
         eventPublisher.publishEvent(NotificationRequest.builder()
                 .user(user)
