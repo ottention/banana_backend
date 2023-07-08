@@ -1,10 +1,10 @@
 package com.ottention.banana.service;
 
+import com.ottention.banana.dto.response.businesscard.BusinessCardLikeResponse;
 import com.ottention.banana.entity.BusinessCard;
 import com.ottention.banana.entity.User;
 import com.ottention.banana.exception.DuplicationLikeException;
 import com.ottention.banana.exception.ZeroLikesError;
-import com.ottention.banana.repository.BusinessCardLikeRepository;
 import com.ottention.banana.repository.BusinessCardRepository;
 import com.ottention.banana.repository.UserRepository;
 import org.junit.jupiter.api.DisplayName;
@@ -27,9 +27,6 @@ class BusinessCardLikeServiceTest {
     @Autowired
     private BusinessCardRepository businessCardRepository;
 
-    @Autowired
-    private BusinessCardLikeRepository businessCardLikeRepository;
-
     @Test
     @DisplayName("명함 좋아요 테스트")
     void likeTest() {
@@ -50,10 +47,11 @@ class BusinessCardLikeServiceTest {
         businessCardRepository.save(businessCard);
 
         //when
-        int like = businessCardLikeService.like(user.getId(), businessCard.getId());
+        BusinessCardLikeResponse like = businessCardLikeService.like(user.getId(), businessCard.getId());
 
         //then
-        assertThat(like).isEqualTo(1);
+        assertThat(like.getLikeCount()).isEqualTo(1);
+        assertThat(like.isLike()).isTrue();
     }
 
     @Test
@@ -105,10 +103,11 @@ class BusinessCardLikeServiceTest {
         businessCardLikeService.like(user.getId(), businessCard.getId());
 
         //when
-        int like = businessCardLikeService.cancelLike(user.getId(), businessCard.getId());
+        BusinessCardLikeResponse like = businessCardLikeService.cancelLike(user.getId(), businessCard.getId());
 
         //then
-        assertThat(like).isEqualTo(0);
+        assertThat(like.getLikeCount()).isEqualTo(0);
+        assertThat(like.isLike()).isFalse();
     }
 
     @Test
