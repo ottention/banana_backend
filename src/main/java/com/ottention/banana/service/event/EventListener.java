@@ -9,13 +9,13 @@ import org.springframework.transaction.event.TransactionalEventListener;
 
 @Slf4j
 @Component
-@RequiredArgsConstructor //?
-public class SaveGuestBookEventListener {
+@RequiredArgsConstructor
+public class EventListener {
     private final NotificationService notificationService;
 
     @TransactionalEventListener
     public void sendPush(NotificationRequest event) {
         notificationService.send(event.getUser(), event.getContent(), event.getUrl(), event.getType());
-        log.info(String.format("방명록 작성 알림 전송 [ 내용 : " + event.getContent() + ", 수신자 : " + event.getUser().getId() + " ]"));
+        log.info(String.format("[ content: " + event.getContent() + ", receiver id : " + event.getUser().getId() + " ]"));
     }
 }
