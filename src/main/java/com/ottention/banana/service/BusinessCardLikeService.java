@@ -10,6 +10,7 @@ import com.ottention.banana.exception.ZeroLikesError;
 import com.ottention.banana.repository.BusinessCardLikeRepository;
 import com.ottention.banana.repository.BusinessCardRepository;
 import com.ottention.banana.repository.UserRepository;
+import com.ottention.banana.service.event.BusinessCardLikeEvent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -41,8 +42,17 @@ public class BusinessCardLikeService {
                 .build();
 
         businessCardLikeRepository.save(like);
-
+        //명함 좋아요 알림 전송
+        notifyBusinessCardLikeInfo(like);
         return new BusinessCardLikeResponse(businessCard.getLikeCount(), true);
+    }
+
+    private void notifyBusinessCardLikeInfo(BusinessCardLike like) {
+        BusinessCardLikeEvent event = BusinessCardLikeEvent.builder()
+                .businessCardId(like.getBusinessCard().getId())
+                .user(like.getUser())
+                .build();
+        event.publishEvent();
     }
 
     public BusinessCardLikeResponse cancelLike(Long userId, Long businessCardId) {
