@@ -1,21 +1,20 @@
 package com.ottention.banana.dto.response.businesscard;
 
 import com.ottention.banana.dto.BusinessCardContentDto;
-import com.ottention.banana.dto.LinkDto;
 import com.ottention.banana.dto.ImageDto;
+import com.ottention.banana.dto.LinkDto;
 import com.ottention.banana.entity.*;
-import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Getter
 public class BusinessCardResponse {
-
+    private Long businessCardId;
     private Boolean isPublic;
     private Boolean isPresent;
+    private int likeCount;
 
     private List<BusinessCardContentDto> frontContents;
     private List<LinkDto> frontLinks;
@@ -35,8 +34,10 @@ public class BusinessCardResponse {
                                 List<Link> backLinks, List<Image> backImages,
                                 List<Tag> tags
                                 ) {
+        this.businessCardId = businessCard.getId();
         this.isPublic = businessCard.getIsPublic();
         this.isPresent = businessCard.getIsRepresent();
+        this.likeCount = businessCard.getLikeCount();
         this.frontContents = frontContents.stream().map(c -> new BusinessCardContentDto(c))
                 .collect(Collectors.toList());
         this.frontLinks = frontLinks.stream().map(l -> new LinkDto(l))
