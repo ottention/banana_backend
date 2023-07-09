@@ -1,5 +1,6 @@
 package com.ottention.banana.service.notification;
 
+import com.ottention.banana.dto.response.NotificationResponse;
 import com.ottention.banana.entity.User;
 import com.ottention.banana.entity.notification.Notification;
 import com.ottention.banana.entity.notification.NotificationType;
@@ -9,6 +10,7 @@ import com.ottention.banana.repository.notification.EmitterRepositoryImpl;
 import com.ottention.banana.repository.notification.NotificationRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
@@ -96,6 +98,11 @@ public class NotificationService {
                 .build();
     }
 
+    public List<NotificationResponse> getAll(Long id, Pageable pageable) {
+        List<Notification> notifications = notificationRepository.findAllByUserId(id, pageable);
+        return notifications.stream().map(sseMapper::toResponse).toList();
+    }
+
     public void deleteAll(Long userId) {
         notificationRepository.deleteAllByUserId(userId);
     }
@@ -103,7 +110,5 @@ public class NotificationService {
     public void deleteById(Long id) {
         notificationRepository.deleteById(id);
     }
-
-
 }
 
