@@ -14,7 +14,7 @@ public class NotificationResponse {
     private String content;
     private String url;
     private Boolean isRead;
-    private LocalDateTime createdAt;
+    private LocalDateTime createdDate;
 
     @Builder
     public NotificationResponse(Notification notification) {
@@ -22,7 +22,6 @@ public class NotificationResponse {
         this.content = notification.getContent().toString();
         this.url = notification.getUrl().getUrl();
         this.isRead = notification.getIsRead();
-        this.createdAt = notification.getCreatedDate();
-
+        this.createdDate = notification.getCreatedDate();
     }
 }
