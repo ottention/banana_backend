@@ -1,23 +1,18 @@
 package com.ottention.banana.controller;
 
 import com.ottention.banana.config.Login;
-import com.ottention.banana.dto.request.LoginUser;
-import com.ottention.banana.dto.request.SaveBackBusinessCardRequest;
-import com.ottention.banana.dto.request.SaveFrontBusinessCardRequest;
-import com.ottention.banana.dto.request.SaveTagRequest;
+import com.ottention.banana.dto.request.*;
+import com.ottention.banana.dto.response.QRCodeAddressResponse;
+import com.ottention.banana.dto.response.businesscard.BusinessCardIdResponse;
 import com.ottention.banana.dto.response.businesscard.BusinessCardResponse;
+import com.ottention.banana.dto.response.businesscard.BusinessCardSettingStatus;
 import com.ottention.banana.service.BusinessCardService;
 import com.ottention.banana.service.QRCodeService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.util.List;
-
-import static com.ottention.banana.AddressConstant.ADDRESS;
-import static org.springframework.http.MediaType.*;
+import static com.ottention.banana.AppConstant.ADDRESS;
 
 @Slf4j
 @RestController
@@ -27,41 +22,31 @@ public class BusinessCardController {
     private final BusinessCardService businessCardService;
     private final QRCodeService qrCodeService;
 
-    @PostMapping(value = "/businessCard/save", consumes = {APPLICATION_JSON_VALUE, MULTIPART_FORM_DATA_VALUE})
-    public Long saveBusinessCard(@Login LoginUser user, @RequestPart(required = false) SaveFrontBusinessCardRequest frontRequest,
-                                 @RequestPart(required = false) SaveBackBusinessCardRequest backRequest,
-                                 @RequestPart(required = false) List<MultipartFile> frontImages,
-                                 @RequestPart(required = false) List<MultipartFile> backImages,
-                                 @RequestPart(required = false) SaveTagRequest tagRequest) {
-        Long businessCardId = businessCardService.save(user.getId(), frontRequest, backRequest, frontImages, backImages, tagRequest);
+    @PostMapping("/businessCard/save")
+    public BusinessCardIdResponse saveBusinessCard(@Login LoginUser user, @RequestBody SaveBusinessCardRequest request) {
+        Long businessCardId = businessCardService.saveBusinessCard(user.getId(), request);
         qrCodeService.generateAndSaveQrCode(ADDRESS + businessCardId, businessCardId);
-        return businessCardId;
+        return new BusinessCardIdResponse(businessCardId);
     }
 
-    @GetMapping("/businessCard/front/{businessCardId}")
-    public BusinessCardResponse getFrontBusinessCard(@PathVariable Long businessCardId) {
-        return businessCardService.getFrontBusinessCard(businessCardId);
+    @PatchMapping("/businessCard/{businessCardId}/update")
+    public void updateBusinessCard(@Login LoginUser user, @PathVariable Long businessCardId, @RequestBody SaveBusinessCardRequest request) {
+        businessCardService.updateBusinessCard(user.getId(), businessCardId, request);
     }
 
-    @GetMapping("/businessCard/back/{businessCardId}")
-    public BusinessCardResponse getBackBusinessCard(@PathVariable Long businessCardId) {
-        return businessCardService.getBackBusinessCard(businessCardId);
+    @GetMapping("/businessCard/representative")
+    public BusinessCardSettingStatus getSettingStatusMessage(@Login LoginUser user) {
+        return businessCardService.getSettingStatusMessage(user.getId());
     }
 
-    @GetMapping(value = "/businessCard/{businessCardId}/qrcode/v1", produces = IMAGE_PNG_VALUE)
-    public ResponseEntity<byte[]> getQRCodeV1(@PathVariable Long businessCardId) {
-        byte[] qrCodeImage = qrCodeService.getQrCodeImageById(businessCardId);
-        return ResponseEntity.ok(qrCodeImage);
+    @GetMapping("/businessCard/{businessCardId}")
+    public BusinessCardResponse getBusinessCard(@Login LoginUser user, @PathVariable Long businessCardId) {
+        return businessCardService.getBusinessCard(user.getId(), businessCardId);
     }
 
-    @GetMapping("/businessCard/{businessCardId}/qrcode/v2")
-    public byte[] getQRCodeV2(@PathVariable Long businessCardId) {
-        return qrCodeService.getQrCodeImageById(businessCardId);
-    }
-
-    @GetMapping("/businessCard/{businessCardId}/qrcode/v3")
-    public String getQRCodeV3(@PathVariable Long businessCardId) {
-        return qrCodeService.getQrCodeImageById(businessCardId).toString();
+    @GetMapping("/businessCard/{businessCardId}/qrcode")
+    public QRCodeAddressResponse getQRCodeV3(@PathVariable Long businessCardId) {
+        return qrCodeService.getQRCodeAddress(businessCardId);
     }
 
 }

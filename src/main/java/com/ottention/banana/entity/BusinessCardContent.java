@@ -33,7 +33,7 @@ public class BusinessCardContent extends BaseEntity {
     @JoinColumn(name = "business_card_id")
     private BusinessCard businessCard;
 
-    public static BusinessCardContent updateBusinessCardContent(String content, ContentSize contentSize,
+    public static BusinessCardContent createBusinessCardContent(String content, ContentSize contentSize,
                                                                 Coordinate coordinate, boolean isFront) {
         return BusinessCardContent.builder()
                 .content(content)

@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: jdbc:h2:mem:test
+    url: jdbc:h2:tcp://localhost/~/card
     username: sa
     password:
     driver-class-name: org.h2.Driver
@@ -13,26 +13,26 @@ spring:
         format_sql: true
         default_batch_fetch_size: 100
 
-    data:
-      web:
-        pageable:
-          one-indexed-parameters: true
+  data:
+    web:
+      pageable:
+        one-indexed-parameters: true
 
-  logging.level:
-    org.hibernate.SQL: debug
-    org.hibernate.type: trace
+logging.level:
+  org.hibernate.SQL: debug
+  org.hibernate.type: trace
 
-  cloud:
-    aws:
-      credentials:
-        access-key: { ACCESSKEY }
-        secret-key: { SECRETKEY }
-      region:
-        static: { REGION }
-      s3:
-        bucket: { BUCKET }
-      stack:
-        auto: false
+cloud:
+  aws:
+    credentials:
+      access-key: ${AWS_ACCESS_KEY}
+      secret-key: ${AWS_SECRET_KEY}
+    region:
+      static: ${AWS_REGION_STATIC}
+    s3:
+      bucket: ${AWS_S3_BUCKET}
+    stack:
+      auto: false
 
-  jwt:
-    jwt-key: { KEY }
+jwt:
+  jwt-key: ${JWT_KEY}

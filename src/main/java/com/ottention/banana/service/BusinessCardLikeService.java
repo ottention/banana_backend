@@ -1,5 +1,6 @@
 package com.ottention.banana.service;
 
+import com.ottention.banana.dto.response.businesscard.BusinessCardLikeResponse;
 import com.ottention.banana.entity.BusinessCard;
 import com.ottention.banana.entity.BusinessCardLike;
 import com.ottention.banana.entity.User;
@@ -9,6 +10,7 @@ import com.ottention.banana.exception.ZeroLikesError;
 import com.ottention.banana.repository.BusinessCardLikeRepository;
 import com.ottention.banana.repository.BusinessCardRepository;
 import com.ottention.banana.repository.UserRepository;
+import com.ottention.banana.service.event.BusinessCardLikeEvent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,7 +26,7 @@ public class BusinessCardLikeService {
     private final BusinessCardRepository businessCardRepository;
     private final UserRepository userRepository;
 
-    public int like(Long userId, Long businessCardId) {
+    public BusinessCardLikeResponse like(Long userId, Long businessCardId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(UserNotFound::new);
 
@@ -40,17 +42,26 @@ public class BusinessCardLikeService {
                 .build();
 
         businessCardLikeRepository.save(like);
-
-        return businessCard.getLikeCount();
+        //명함 좋아요 알림 전송
+        notifyBusinessCardLikeInfo(like);
+        return new BusinessCardLikeResponse(businessCard.getLikeCount(), true);
     }
 
-    public int cancelLike(Long userId, Long businessCardId) {
+    private void notifyBusinessCardLikeInfo(BusinessCardLike like) {
+        BusinessCardLikeEvent event = BusinessCardLikeEvent.builder()
+                .businessCardId(like.getBusinessCard().getId())
+                .user(like.getUser())
+                .build();
+        event.publishEvent();
+    }
+
+    public BusinessCardLikeResponse cancelLike(Long userId, Long businessCardId) {
         BusinessCardLike businessCardLike = businessCardLikeRepository.findByUserIdAndBusinessCardId(userId, businessCardId)
                 .orElseThrow(ZeroLikesError::new);
 
         businessCardLikeRepository.delete(businessCardLike);
 
-        return businessCardLike.cancelLike();
+        return new BusinessCardLikeResponse(businessCardLike.cancelLike(), false);
     }
 
 }

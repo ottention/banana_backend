@@ -1,7 +1,7 @@
 package com.ottention.banana.service.wallet;
 
 import com.ottention.banana.entity.wallet.StoredBusinessCard;
-import com.ottention.banana.repository.StoredBusinessCardRepository;
+import com.ottention.banana.repository.wallet.StoredBusinessCardRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
