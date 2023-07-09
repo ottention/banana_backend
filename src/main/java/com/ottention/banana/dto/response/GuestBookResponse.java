@@ -14,7 +14,7 @@ public class GuestBookResponse {
     private final String content;
     private final Boolean isGuestBookLike;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss", timezone = "Asia/Seoul")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
     private final LocalDateTime localDateTime;
 
     public static GuestBookResponse guestBookResponse(GuestBook guestBook) {

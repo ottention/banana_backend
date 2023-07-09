@@ -43,13 +43,6 @@ class GuestBookServiceTest {
     @Autowired
     GuestBookService guestBookService;
 
-    @BeforeEach
-    void clear() {
-        userRepository.deleteAll();
-        guestBookRepository.deleteAll();
-        businessCardRepository.deleteAll();
-    }
-
     @Test
     @DisplayName("방명록 작성 테스트")
     void saveGuestBookTest() {

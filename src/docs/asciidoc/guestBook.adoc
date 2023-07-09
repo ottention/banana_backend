@@ -1,0 +1,34 @@
+# 방명록 API
+:toc: left
+
+## 방명록 작성
+
+### 요청 필드
+include::{snippets}/guestBook-save/request-fields.adoc[]
+
+### 요청
+include::{snippets}/guestBook-save/http-request.adoc[]
+
+### 응답
+include::{snippets}/guestBook-save/http-response.adoc[]
+
+## 자신의 명함의 방명록 조회
+
+### 요청
+include::{snippets}/guestBook-getBusinessCardGuestBook/http-request.adoc[]
+
+### 응답
+include::{snippets}/guestBook-getBusinessCardGuestBook/http-response.adoc[]
+
+## 자신이 작성한 방명록 조회
+
+### 요청
+include::{snippets}/guestBook-getMyWrittenGuestBooks/http-request.adoc[]
+
+### 응답
+include::{snippets}/guestBook-getMyWrittenGuestBooks/http-response.adoc[]
+
+## 방명록 오류
+
+### 응답
+include::{snippets}/guestBook-forbidden/http-response.adoc[]

@@ -1,93 +1,177 @@
 package com.ottention.banana.service;
 
-import com.ottention.banana.dto.request.SaveBackBusinessCardRequest;
-import com.ottention.banana.dto.request.SaveFrontBusinessCardRequest;
-import com.ottention.banana.dto.request.SaveTagRequest;
+import com.ottention.banana.dto.request.SaveBusinessCardRequest;
 import com.ottention.banana.dto.response.businesscard.BusinessCardResponse;
-import com.ottention.banana.dto.response.businesscard.TagResponse;
-import com.ottention.banana.entity.BusinessCard;
-import com.ottention.banana.entity.BusinessCardContent;
-import com.ottention.banana.entity.Image;
-import com.ottention.banana.entity.User;
-import com.ottention.banana.exception.BusinessCardNotFound;
-import com.ottention.banana.exception.UserNotFound;
+import com.ottention.banana.dto.response.businesscard.BusinessCardSettingStatus;
+import com.ottention.banana.entity.*;
+import com.ottention.banana.exception.*;
 import com.ottention.banana.repository.BusinessCardRepository;
 import com.ottention.banana.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
+import static com.ottention.banana.AppConstant.*;
+
+@Slf4j
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class BusinessCardService {
 
     private final BusinessCardContentService businessCardContentService;
-    private final ImageService imageService;
-    private final TagService tagService;
     private final BusinessCardRepository businessCardRepository;
     private final UserRepository userRepository;
+    private final ImageService imageService;
+    private final LinkService linkService;
+    private final TagService tagService;
 
-    /**
-     * @param userId
-     * @param frontRequest : 명함 앞 요청
-     * @param backRequest  : 명함 뒤 요청
-     * @param frontImages  : 명함 앞 이미지
-     * @param backImages   : 명함 뒤 이미지
-     * @return
-     */
     @Transactional
-    public Long save(Long userId, SaveFrontBusinessCardRequest frontRequest, SaveBackBusinessCardRequest backRequest,
-                     List<MultipartFile> frontImages, List<MultipartFile> backImages, SaveTagRequest tagRequest) {
-        User findUser = userRepository.findById(userId)
+    public Long saveBusinessCard(Long userId, SaveBusinessCardRequest request) {
+        User user = userRepository.findById(userId)
                 .orElseThrow(UserNotFound::new);
 
-        BusinessCard businessCard = BusinessCard.builder()
-                .isPublic(frontRequest.getIsPublic())
-                .isRepresent(frontRequest.getIsPresent())
-                .user(findUser)
-                .build();
+        List<BusinessCard> businessCards = businessCardRepository.findByUserId(userId);
+        if (businessCards.size() >= MAX_BUSINESS_CARD_COUNT) {
+            throw new BusinessCardLimitExceededException();
+        }
 
-        businessCardContentService.saveBusinessCardContents(frontRequest, backRequest, businessCard);
-        imageService.saveBusinessCardImages(frontRequest.getFrontImageCoordinates(), backRequest.getBackImageCoordinates(),
-                frontImages, backImages, businessCard);
-        tagService.saveTag(tagRequest, businessCard);
+        log.info("isPresent = {}", request.getIsPresent());
+        log.info("isPublic = {}", request.getIsPublic());
+        log.info("frontTemplateColor = {}", request.getFrontTemplateColor());
+        log.info("backTemplateColor = {}", request.getBackTemplateColor());
 
+        //처음 명함은 무조건 대표 명함
+        if (businessCards.size() == INITIAL_BUSINESS_CARD_COUNT) {
+            BusinessCard businessCard = createInitialBusinessCard(request, user);
+            return businessCardRepository.save(businessCard).getId();
+        }
+
+        updateRepresentativeStatus(request, businessCards);
+
+        BusinessCard businessCard = createSubsequentBusinessCard(request, user);
         return businessCardRepository.save(businessCard).getId();
     }
 
-    /**
-     * 명함 앞 데이터 가져오기
-     */
-    public BusinessCardResponse getFrontBusinessCard(Long businessCardId) {
-        return getBusinessCardResponse(businessCardId, true);
-    }
+    @Transactional
+    public void updateBusinessCard(Long userId, Long businessCardId, SaveBusinessCardRequest request) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(UserNotFound::new);
 
-    /**
-     * 명함 뒤 데이터 가져오기
-     */
-    public BusinessCardResponse getBackBusinessCard(Long businessCardId) {
-        return getBusinessCardResponse(businessCardId, false);
-    }
-
-    /**
-     * 명함 데이터 가져오기
-     * @param businessCardId : 어떤 명함 데이터 가져올건지
-     * @param isFront : 앞 뒤 구분을 위한 파라미터
-     * @return
-     */
-    private BusinessCardResponse getBusinessCardResponse(Long businessCardId, boolean isFront) {
         BusinessCard businessCard = businessCardRepository.findById(businessCardId)
                 .orElseThrow(BusinessCardNotFound::new);
 
-        List<Image> images = imageService.findByBusinessCardIdAndIsFront(businessCard.getId(), isFront);
-        List<BusinessCardContent> contents = businessCardContentService.findByBusinessCardIdAndIsFront(businessCard.getId(), isFront);
-        List<TagResponse> tags = tagService.getTags(businessCard.getId());
+        validateSameUser(user, businessCard);
 
-        return BusinessCardResponse.toBusinessCard(contents, images, tags);
+        List<BusinessCardContent> frontContents = businessCardContentService.getFrontContents(businessCardId);
+        List<BusinessCardContent> backContents = businessCardContentService.getBackContents(businessCardId);
+        businessCardContentService.deleteBusinessCardContents(frontContents);
+        businessCardContentService.deleteBusinessCardContents(backContents);
+
+        List<Image> frontImages = imageService.getFrontImages(businessCardId);
+        List<Image> backImages = imageService.getBackImages(businessCardId);
+        imageService.deleteImages(frontImages);
+        imageService.deleteImages(backImages);
+
+        List<Link> frontLinks = linkService.getFrontLinks(businessCardId);
+        List<Link> backLinks = linkService.getBackLinks(businessCardId);
+        linkService.deleteLinks(frontLinks);
+        linkService.deleteLinks(backLinks);
+
+        List<Tag> tags = tagService.getTags(businessCardId);
+        tagService.deleteTags(tags);
+
+        businessCardContentService.saveBusinessCardContents(request, businessCard);
+        imageService.saveImage(request, businessCard);
+        linkService.saveLink(request, businessCard);
+        tagService.saveTag(request.getTags(), businessCard);
+    }
+
+    private void validateSameUser(User user, BusinessCard businessCard) {
+        if (!user.getId().equals(businessCard.getUser().getId())) {
+            throw new InvalidRequest();
+        }
+    }
+
+    private void updateRepresentativeStatus(SaveBusinessCardRequest request, List<BusinessCard> businessCards) {
+        if (request.getIsPresent()) {
+            for (BusinessCard businessCard : businessCards) {
+                businessCard.updateRepresent(false);
+            }
+        }
+    }
+
+    private BusinessCard createInitialBusinessCard(SaveBusinessCardRequest request, User user) {
+        return createBusinessCard(request, user, true);
+    }
+
+    private BusinessCard createSubsequentBusinessCard(SaveBusinessCardRequest request, User user) {
+        return createBusinessCard(request, user, request.getIsPresent());
+    }
+
+    private BusinessCard createBusinessCard(SaveBusinessCardRequest request, User user, boolean isRepresent) {
+        BusinessCard businessCard = BusinessCard.builder()
+                .isPublic(request.getIsPublic())
+                .isRepresent(isRepresent)
+                .frontTemplateColor(request.getFrontTemplateColor())
+                .backTemplateColor(request.getBackTemplateColor())
+                .user(user)
+                .build();
+
+        businessCardContentService.saveBusinessCardContents(request, businessCard);
+        imageService.saveImage(request, businessCard);
+        linkService.saveLink(request, businessCard);
+        tagService.saveTag(request.getTags(), businessCard);
+        return businessCard;
+    }
+
+    //알림창 메시지 반환 메서드
+    public BusinessCardSettingStatus getSettingStatusMessage(Long userId) {
+        List<BusinessCard> businessCards = businessCardRepository.findByUserId(userId);
+        for (int businessCardNumber = 0; businessCardNumber < businessCards.size(); businessCardNumber++) {
+            if (businessCards.get(businessCardNumber).getIsRepresent()) {
+                String message = generateMessage(businessCardNumber + 1);
+                return new BusinessCardSettingStatus(message);
+            }
+        }
+        return new BusinessCardSettingStatus("");
+    }
+
+    private String generateMessage(int businessCardNumber) {
+        return String.format(MAIN_CARD_REGISTERED_MESSAGE, businessCardNumber);
+    }
+
+    public BusinessCardResponse getBusinessCard(Long userId, Long businessCardId) {
+        BusinessCard businessCard = businessCardRepository.findById(businessCardId)
+                .orElseThrow(BusinessCardNotFound::new);
+
+        if (!businessCard.getUser().getId().equals(userId)) {
+            if (!businessCard.getIsPublic()) {
+                throw new PrivateBusinessCardException();
+            }
+            return getBusinessCardResponse(businessCardId, businessCard);
+        }
+
+        return getBusinessCardResponse(businessCardId, businessCard);
+    }
+
+    private BusinessCardResponse getBusinessCardResponse(Long businessCardId, BusinessCard businessCard) {
+        List<BusinessCardContent> frontContents = businessCardContentService.getFrontContents(businessCardId);
+        List<BusinessCardContent> backContents = businessCardContentService.getBackContents(businessCardId);
+
+        List<Image> frontImages = imageService.getFrontImages(businessCardId);
+        List<Image> backImages = imageService.getBackImages(businessCardId);
+
+        List<Link> frontLinks = linkService.getFrontLinks(businessCardId);
+        List<Link> backLinks = linkService.getBackLinks(businessCardId);
+
+        List<Tag> tags = tagService.getTags(businessCardId);
+
+        return new BusinessCardResponse(businessCard, frontContents, frontLinks, frontImages,
+                backContents, backLinks, backImages, tags);
     }
 
 }

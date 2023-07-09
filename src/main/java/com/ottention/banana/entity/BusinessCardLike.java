@@ -1,5 +1,7 @@
 package com.ottention.banana.entity;
 
+import com.ottention.banana.exception.DuplicationLikeException;
+import com.ottention.banana.exception.ZeroLikesError;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -33,12 +35,16 @@ public class BusinessCardLike extends BaseEntity {
     public BusinessCardLike(BusinessCard businessCard, User user, Optional<BusinessCardLike> like) {
         //좋아요 중복 검증
         if (!like.isEmpty()) {
-            throw new IllegalArgumentException("좋아요는 한 번만 누를 수 있습니다.");
+            throw new DuplicationLikeException();
         }
         //좋아요 카운트 증가
         businessCard.updateLikeCount(businessCard.getLikeCount() + 1);
         this.businessCard = businessCard;
         this.user = user;
+    }
+
+    public int cancelLike() {
+        return businessCard.updateLikeCount(businessCard.getLikeCount() - 1);
     }
 
 }

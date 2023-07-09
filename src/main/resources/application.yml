@@ -25,14 +25,14 @@ logging.level:
 cloud:
   aws:
     credentials:
-      access-key: {ACCESSKEY}
-      secret-key: {SECRETKEY}
+      access-key: ${AWS_ACCESS_KEY}
+      secret-key: ${AWS_SECRET_KEY}
     region:
-      static: {REGION}
+      static: ${AWS_REGION_STATIC}
     s3:
-      bucket: {BUCKET}
+      bucket: ${AWS_S3_BUCKET}
     stack:
       auto: false
 
 jwt:
-  jwt-key: {KEY}
+  jwt-key: ${JWT_KEY}

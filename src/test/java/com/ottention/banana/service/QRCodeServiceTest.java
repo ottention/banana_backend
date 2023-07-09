@@ -33,13 +33,6 @@ class QRCodeServiceTest {
     @Autowired
     private UserRepository userRepository;
 
-    @BeforeEach
-    void clear() {
-        businessCardRepository.deleteAll();
-        qrCodeRepository.deleteAll();
-        userRepository.deleteAll();
-    }
-
     @Test
     @DisplayName("QR코드 생성 테스트")
     void generateQRCodeTest() {

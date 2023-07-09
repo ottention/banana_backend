@@ -62,9 +62,6 @@ class GuestBookControllerTest {
     @BeforeEach
     void setUp(WebApplicationContext webApplicationContext,
                RestDocumentationContextProvider restDocumentation) {
-        guestBookRepository.deleteAll();
-        businessCardRepository.deleteAll();
-        userRepository.deleteAll();
 
         mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext)
                 .apply(documentationConfiguration(restDocumentation))
