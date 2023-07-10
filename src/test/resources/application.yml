@@ -22,17 +22,5 @@ logging.level:
   org.hibernate.SQL: debug
   org.hibernate.type: trace
 
-cloud:
-  aws:
-    credentials:
-      access-key: ${AWS_ACCESS_KEY}
-      secret-key: ${AWS_SECRET_KEY}
-    region:
-      static: ${AWS_REGION_STATIC}
-    s3:
-      bucket: ${AWS_S3_BUCKET}
-    stack:
-      auto: false
-
 jwt:
   jwt-key: ${JWT_KEY}

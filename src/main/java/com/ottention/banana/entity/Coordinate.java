@@ -10,20 +10,20 @@ import static lombok.AccessLevel.PROTECTED;
 @NoArgsConstructor(access = PROTECTED)
 public class Coordinate {
 
-    private int xAxis;
-    private int yAxis;
+    private float xAxis;
+    private float yAxis;
 
     @Builder
-    public Coordinate(int xAxis, int yAxis) {
+    public Coordinate(float xAxis, float yAxis) {
         this.xAxis = xAxis;
         this.yAxis = yAxis;
     }
 
-    public int getxAxis() {
+    public float getxAxis() {
         return xAxis;
     }
 
-    public int getyAxis() {
+    public float getyAxis() {
         return yAxis;
     }
 
