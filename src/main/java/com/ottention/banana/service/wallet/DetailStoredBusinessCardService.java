@@ -1,15 +1,20 @@
 package com.ottention.banana.service.wallet;
 
-import com.ottention.banana.dto.response.businesscard.StoredBusinessCardResponse;
+import com.ottention.banana.dto.response.businesscard.BackBusinessCardResponse;
+import com.ottention.banana.dto.response.businesscard.FrontBusinessCardResponse;
+import com.ottention.banana.dto.response.businesscard.wallet.StoredCardDetailResponse;
+import com.ottention.banana.entity.BusinessCard;
 import com.ottention.banana.entity.wallet.StoredBusinessCard;
 import com.ottention.banana.repository.wallet.StoredBusinessCardRepository;
 import com.ottention.banana.service.BusinessCardContentService;
 import com.ottention.banana.service.ImageService;
+import com.ottention.banana.service.LinkService;
 import com.ottention.banana.service.TagService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 
 @Service
 @Transactional(readOnly = true)
@@ -18,22 +23,43 @@ public class DetailStoredBusinessCardService {
     private final StoredBusinessCardRepository storedCardRepository;
     private final BusinessCardContentService businessCardContentService;
     private final ImageService imageService;
+    private final LinkService linkService;
     private final TagService tagService;
 
-    public StoredBusinessCardResponse findStoredBusinessCard(Long id, Boolean isFront) {
+    public StoredCardDetailResponse findStoredCardDetail(Long id) {
         StoredBusinessCard storedBusinessCard = storedCardRepository.findById(id).orElseThrow(EntityNotFoundException::new);
-        return toResponse(storedBusinessCard, isFront);
+        return toResponse(storedBusinessCard);
     }
 
-    public StoredBusinessCardResponse toResponse(StoredBusinessCard storedCard, Boolean isFront) {
-        return StoredBusinessCardResponse.builder()
+    public StoredCardDetailResponse toResponse(StoredBusinessCard storedCard) {
+        return StoredCardDetailResponse.builder()
                 .id(storedCard.getId())
                 .name(storedCard.getName())
-                .contents(businessCardContentService.findByBusinessCardIdAndIsFront(storedCard.getBusinessCard().getId(), isFront))
-                .images(imageService.findByBusinessCardIdAndIsFront(storedCard.getBusinessCard().getId(), isFront))
+                .front(findFrontStoredCardDetail(storedCard.getBusinessCard()))
+                .back(findBackStoredCardDetail(storedCard.getBusinessCard()))
                 .tags(tagService.getTags(storedCard.getBusinessCard().getId()))
                 .build();
     }
+
+    public FrontBusinessCardResponse findFrontStoredCardDetail(BusinessCard card) {
+        return FrontBusinessCardResponse.builder()
+                .frontContents(businessCardContentService.getFrontContents(card.getId()))
+                .frontImages(imageService.getFrontImages(card.getId()))
+                .frontLinks(linkService.getFrontLinks(card.getId()))
+                .frontTemplateColor(card.getFrontTemplateColor())
+                .build();
+    }
+
+    private BackBusinessCardResponse findBackStoredCardDetail(BusinessCard card) {
+        return BackBusinessCardResponse.builder()
+                .backContents(businessCardContentService.getBackContents(card.getId()))
+                .backImages(imageService.getBackImages(card.getId()))
+                .backLinks(linkService.getBackLinks(card.getId()))
+                .backTemplateColor(card.getBackTemplateColor())
+                .build();
+    }
+
+
 
     @Transactional
     public void delete(Long id) {
