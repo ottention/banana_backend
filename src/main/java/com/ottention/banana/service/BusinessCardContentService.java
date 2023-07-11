@@ -15,12 +15,13 @@ import java.util.List;
 
 @Slf4j
 @Service
-@Transactional
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class BusinessCardContentService {
 
     private final BusinessCardContentRepository businessCardContentRepository;
 
+    @Transactional
     public void saveBusinessCardContents(SaveBusinessCardRequest request, BusinessCard businessCard) {
         saveContents(request.getFrontContents(), businessCard);
         saveContents(request.getBackContents(), businessCard);
@@ -51,9 +52,12 @@ public class BusinessCardContentService {
     }
 
     @Transactional
-    public void deleteBusinessCardContents(List<BusinessCardContent> businessCardContents) {
-        for (BusinessCardContent businessCardContent : businessCardContents) {
-            businessCardContentRepository.delete(businessCardContent);
+    public void deleteBusinessCardContents(List<BusinessCardContent> frontContents, List<BusinessCardContent> backContents) {
+        for (BusinessCardContent frontContent : frontContents) {
+            businessCardContentRepository.delete(frontContent);
+        }
+        for (BusinessCardContent backContent : backContents) {
+            businessCardContentRepository.delete(backContent);
         }
     }
 

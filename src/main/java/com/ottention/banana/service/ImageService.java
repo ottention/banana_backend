@@ -48,9 +48,12 @@ public class ImageService {
     }
 
     @Transactional
-    public void deleteImages(List<Image> images) {
-        for (Image image : images) {
-            imageRepository.delete(image);
+    public void deleteImages(List<Image> frontImages, List<Image> backImages) {
+        for (Image frontImage : frontImages) {
+            imageRepository.delete(frontImage);
+        }
+        for (Image backImage : backImages) {
+            imageRepository.delete(backImage);
         }
     }
 
