@@ -39,6 +39,10 @@ public class GuestBook extends BaseEntity {
         this.businessCard = businessCard;
     }
 
+    public void updateGuestBook(String content) {
+        this.content = content;
+    }
+
     //방명록 좋아요
     public void like() {
         this.guestBookLike = true;
