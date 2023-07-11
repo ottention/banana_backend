@@ -6,6 +6,7 @@ import com.ottention.banana.dto.response.businesscard.BusinessCardSettingStatus;
 import com.ottention.banana.entity.*;
 import com.ottention.banana.exception.*;
 import com.ottention.banana.repository.BusinessCardRepository;
+import com.ottention.banana.repository.GuestBookRepository;
 import com.ottention.banana.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,6 +26,7 @@ public class BusinessCardService {
     private final BusinessCardContentService businessCardContentService;
     private final BusinessCardRepository businessCardRepository;
     private final UserRepository userRepository;
+    private final GuestBookRepository guestBookRepository;
     private final ImageService imageService;
     private final LinkService linkService;
     private final TagService tagService;
@@ -68,18 +70,15 @@ public class BusinessCardService {
 
         List<BusinessCardContent> frontContents = businessCardContentService.getFrontContents(businessCardId);
         List<BusinessCardContent> backContents = businessCardContentService.getBackContents(businessCardId);
-        businessCardContentService.deleteBusinessCardContents(frontContents);
-        businessCardContentService.deleteBusinessCardContents(backContents);
+        businessCardContentService.deleteBusinessCardContents(frontContents, backContents);
 
         List<Image> frontImages = imageService.getFrontImages(businessCardId);
         List<Image> backImages = imageService.getBackImages(businessCardId);
-        imageService.deleteImages(frontImages);
-        imageService.deleteImages(backImages);
+        imageService.deleteImages(frontImages, backImages);
 
         List<Link> frontLinks = linkService.getFrontLinks(businessCardId);
         List<Link> backLinks = linkService.getBackLinks(businessCardId);
-        linkService.deleteLinks(frontLinks);
-        linkService.deleteLinks(backLinks);
+        linkService.deleteLinks(frontLinks, backLinks);
 
         List<Tag> tags = tagService.getTags(businessCardId);
         tagService.deleteTags(tags);
@@ -172,6 +171,17 @@ public class BusinessCardService {
 
         return new BusinessCardResponse(businessCard, frontContents, frontLinks, frontImages,
                 backContents, backLinks, backImages, tags);
+    }
+
+    @Transactional
+    public void deleteBusinessCard(Long businessCardId) {
+        BusinessCard businessCard = businessCardRepository.findById(businessCardId)
+                .orElseThrow(BusinessCardNotFound::new);
+
+        List<GuestBook> guestBooks = guestBookRepository.findAllByBusinessCardId(businessCardId);
+        guestBookRepository.deleteAllInBatch(guestBooks);
+
+        businessCardRepository.delete(businessCard);
     }
 
 }
