@@ -4,7 +4,8 @@ import com.ottention.banana.config.Login;
 import com.ottention.banana.dto.request.LoginUser;
 import com.ottention.banana.dto.response.businesscard.CategoryCardsResponse;
 import com.ottention.banana.dto.response.businesscard.CategoryResponse;
-import com.ottention.banana.dto.response.businesscard.StoredBusinessCardResponse;
+import com.ottention.banana.dto.response.businesscard.wallet.StoredCardDetailResponse;
+import com.ottention.banana.dto.response.businesscard.wallet.StoredCardPreviewResponse;
 import com.ottention.banana.service.CategoryService;
 import com.ottention.banana.service.wallet.StoredBusinessCardService;
 import lombok.AccessLevel;
@@ -13,12 +14,9 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import static org.springframework.data.domain.Sort.Direction.DESC;
 
@@ -33,21 +31,21 @@ public class WalletController {
     //북마크된 명함 두 개
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/two-bookmarked-cards")
-    public List<StoredBusinessCardResponse> getTwoBookmarkedCards(@Login LoginUser user) {
+    public List<StoredCardPreviewResponse> getTwoBookmarkedCards(@Login LoginUser user) {
         return storedBusinessCardService.getTwoBookmarkedCards(user.getId());
     }
 
     //전체명함
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("")
-    public List<StoredBusinessCardResponse> getAllStoredCards(@Login LoginUser user, @PageableDefault(sort = "modifiedDate", direction = DESC) Pageable pageable) {
+    public List<StoredCardPreviewResponse> getAllStoredCards(@Login LoginUser user, @PageableDefault(sort = "modifiedDate", direction = DESC) Pageable pageable) {
         return storedBusinessCardService.getAllStoredBusinessCards(user.getId(), pageable);
     }
 
     //북마크
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/bookmark")
-    public List<StoredBusinessCardResponse> getBookmarkedStoredBusinessCards(@Login LoginUser user, @PageableDefault(sort = "modifiedDate", direction = DESC) Pageable pageable) {
+    public List<StoredCardPreviewResponse> getBookmarkedStoredBusinessCards(@Login LoginUser user, @PageableDefault(sort = "modifiedDate", direction = DESC) Pageable pageable) {
         return storedBusinessCardService.getBookmarkedStoredCards(user.getId(), pageable);
     }
 
