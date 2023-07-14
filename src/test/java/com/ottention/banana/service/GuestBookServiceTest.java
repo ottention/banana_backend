@@ -5,11 +5,12 @@ import com.ottention.banana.dto.response.GuestBookResponse;
 import com.ottention.banana.entity.BusinessCard;
 import com.ottention.banana.entity.GuestBook;
 import com.ottention.banana.entity.User;
-import com.ottention.banana.exception.SelfGuestbookNotAllowedException;
+import com.ottention.banana.exception.InvalidRequest;
+import com.ottention.banana.exception.guestBook.SelfGuestbookNotAllowedException;
 import com.ottention.banana.repository.BusinessCardRepository;
 import com.ottention.banana.repository.GuestBookRepository;
 import com.ottention.banana.repository.UserRepository;
-import org.junit.jupiter.api.BeforeEach;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -195,4 +197,131 @@ class GuestBookServiceTest {
         assertEquals(myGuestBooks.get(0).getContent(), "방명록 내용19");
         assertEquals(myGuestBooks.get(9).getContent(), "방명록 내용10");
     }
+
+    @Test
+    @DisplayName("자기가 작성하지 않은 방명록 삭제 테스트")
+    void invalidRequestTest() {
+        //given
+        User user1 = User.builder()
+                .email("a")
+                .nickName("a")
+                .build();
+
+        User user2 = User.builder()
+                .email("a")
+                .nickName("a")
+                .build();
+
+        userRepository.save(user1);
+        userRepository.save(user2);
+
+        BusinessCard businessCard = BusinessCard.builder()
+                .user(user1)
+                .isPublic(true)
+                .isRepresent(true)
+                .build();
+
+        businessCardRepository.save(businessCard);
+
+        GuestBook guestBook = GuestBook.builder()
+                .content("방명록 내용")
+                .guestBookLike(false)
+                .user(user2)
+                .businessCard(businessCard)
+                .writer(user2.getNickName())
+                .build();
+
+        guestBookRepository.save(guestBook);
+
+        //then
+        assertThatThrownBy(() -> guestBookService.deleteMyWrittenGuestBook(user1.getId(), businessCard.getId()))
+                .isInstanceOf(InvalidRequest.class);
+    }
+
+    @Test
+    @DisplayName("내 명함의 방명록 삭제 테스트")
+    void deleteMyBusinessCardGuestBookTest() {
+        //given
+        User user1 = User.builder()
+                .email("a")
+                .nickName("a")
+                .build();
+
+        User user2 = User.builder()
+                .email("a")
+                .nickName("a")
+                .build();
+
+        userRepository.save(user1);
+        userRepository.save(user2);
+
+        BusinessCard businessCard = BusinessCard.builder()
+                .user(user1)
+                .isPublic(true)
+                .isRepresent(true)
+                .build();
+
+        businessCardRepository.save(businessCard);
+
+        GuestBook guestBook = GuestBook.builder()
+                .content("방명록 내용")
+                .guestBookLike(false)
+                .user(user2)
+                .businessCard(businessCard)
+                .writer(user2.getNickName())
+                .build();
+
+        guestBookRepository.save(guestBook);
+
+        //when
+        guestBookService.deleteMyBusinessCardGuestBook(businessCard.getId(), guestBook.getId());
+
+        //then
+        Optional<GuestBook> findGuestBook = guestBookRepository.findById(guestBook.getId());
+        assertThat(findGuestBook).isEmpty();
+    }
+
+    @Test
+    @DisplayName("내가 쓴 방명록 삭제")
+    void deleteMyWrittenGuestBookTest() {
+        //given
+        User user1 = User.builder()
+                .email("a")
+                .nickName("a")
+                .build();
+
+        User user2 = User.builder()
+                .email("a")
+                .nickName("a")
+                .build();
+
+        userRepository.save(user1);
+        userRepository.save(user2);
+
+        BusinessCard businessCard = BusinessCard.builder()
+                .user(user1)
+                .isPublic(true)
+                .isRepresent(true)
+                .build();
+
+        businessCardRepository.save(businessCard);
+
+        GuestBook guestBook = GuestBook.builder()
+                .content("방명록 내용")
+                .guestBookLike(false)
+                .user(user2)
+                .businessCard(businessCard)
+                .writer(user2.getNickName())
+                .build();
+
+        guestBookRepository.save(guestBook);
+
+        //when
+        guestBookService.deleteMyWrittenGuestBook(user2.getId(), guestBook.getId());
+
+        //then
+        Optional<GuestBook> findGuestBook = guestBookRepository.findById(guestBook.getId());
+        assertThat(findGuestBook).isEmpty();
+    }
+
 }
