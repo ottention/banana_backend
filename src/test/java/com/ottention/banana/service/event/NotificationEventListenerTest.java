@@ -4,6 +4,7 @@ import com.ottention.banana.dto.request.notification.NotificationRequest;
 import com.ottention.banana.entity.User;
 import com.ottention.banana.entity.notification.NotificationType;
 import com.ottention.banana.repository.UserRepository;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -38,7 +39,7 @@ class NotificationEventListenerTest {
                 .type(NotificationType.NEW_GUESTBOOK)
                 .build();
 
-        listener.sendPush(request);
+        Assertions.assertDoesNotThrow(() -> listener.sendPush(request));
     }
 
     @Test
@@ -56,7 +57,7 @@ class NotificationEventListenerTest {
                 .url(url)
                 .type(NotificationType.NEW_GUESTBOOK)
                 .build();
-        publisher.publishEvent(request);
+        Assertions.assertDoesNotThrow(() -> publisher.publishEvent(request));
     }
 
 }
