@@ -49,4 +49,9 @@ public class BusinessCardController {
         return qrCodeService.getQRCodeAddress(businessCardId);
     }
 
+    @DeleteMapping("/businessCard/{businessCardId}/delete")
+    public void deleteBusinessCard(@PathVariable Long businessCardId) {
+        businessCardService.deleteBusinessCard(businessCardId);
+    }
+
 }

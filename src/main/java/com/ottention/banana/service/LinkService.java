@@ -71,9 +71,12 @@ public class LinkService {
     }
 
     @Transactional
-    public void deleteLinks(List<Link> links) {
-        for (Link link : links) {
-            linkRepository.delete(link);
+    public void deleteLinks(List<Link> frontLinks, List<Link> backLinks) {
+        for (Link frontLink : frontLinks) {
+            linkRepository.delete(frontLink);
+        }
+        for (Link backLink : backLinks) {
+            linkRepository.delete(backLink);
         }
     }
 

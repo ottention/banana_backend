@@ -1,19 +1,21 @@
 package com.ottention.banana.service;
 
 import com.ottention.banana.dto.request.SaveGuestBookRequest;
-import com.ottention.banana.dto.request.notification.NotificationRequest;
+import com.ottention.banana.dto.response.GuestBookLikeResponse;
 import com.ottention.banana.dto.response.GuestBookResponse;
 import com.ottention.banana.entity.BusinessCard;
 import com.ottention.banana.entity.GuestBook;
 import com.ottention.banana.entity.User;
-import com.ottention.banana.entity.notification.NotificationType;
 import com.ottention.banana.exception.BusinessCardNotFound;
-import com.ottention.banana.exception.SelfGuestbookNotAllowedException;
+import com.ottention.banana.exception.InvalidRequest;
+import com.ottention.banana.exception.guestBook.GuestBookNotFound;
+import com.ottention.banana.exception.guestBook.SelfGuestbookNotAllowedException;
 import com.ottention.banana.exception.UserNotFound;
 import com.ottention.banana.repository.BusinessCardRepository;
 import com.ottention.banana.repository.GuestBookRepository;
 import com.ottention.banana.repository.UserRepository;
-import com.ottention.banana.service.event.SaveGuestBookEvent;
+import com.ottention.banana.service.event.EventContent;
+import com.ottention.banana.service.event.EventUrl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Pageable;
@@ -32,8 +34,6 @@ public class GuestBookService {
     private final GuestBookRepository guestBookRepository;
     private final UserRepository userRepository;
     private final ApplicationEventPublisher eventPublisher;
-
-
 
     /**
      *
@@ -66,18 +66,53 @@ public class GuestBookService {
         return guestBookRepository.save(guestBook).getId();
     }
 
+    //내가 쓴 방명록 수정
+    @Transactional
+    public void updateGuestBook(Long userId, Long guestBookId, SaveGuestBookRequest request) {
+        GuestBook guestBook = guestBookRepository.findById(guestBookId)
+                .orElseThrow(GuestBookNotFound::new);
+
+        if (!guestBook.getUser().getId().equals(userId)) {
+            throw new InvalidRequest();
+        }
+
+        guestBook.updateGuestBook(request.getContent());
+    }
+
+    //내가 쓴 방명록 삭제
+    @Transactional
+    public void deleteMyWrittenGuestBook(Long userId, Long guestBookId) {
+        GuestBook guestBook = guestBookRepository.findById(guestBookId)
+                .orElseThrow(GuestBookNotFound::new);
+
+        if (!guestBook.getUser().getId().equals(userId)) {
+            throw new InvalidRequest();
+        }
+
+        guestBookRepository.deleteById(guestBookId);
+    }
+
+    //자신의 명함 방명록 삭제
+    @Transactional
+    public void deleteMyBusinessCardGuestBook(Long businessCardId, Long guestBookId) {
+        GuestBook guestBook = guestBookRepository.findByBusinessCardIdAndId(businessCardId, guestBookId)
+                .orElseThrow();
+        guestBookRepository.delete(guestBook);
+    }
+
     private void notifyGuestBookInfo(BusinessCard businessCard, User writer) {
-        SaveGuestBookEvent event = SaveGuestBookEvent.builder()
-                .businessCardId(businessCard.getId())
+        NotificationRequest event = NotificationRequest.builder()
                 .user(businessCard.getUser())
-                .writerNickName(writer.getNickName())
+                .content(writer.getNickName() + EventContent.SAVE_GUESTBOOK_CONTENT.getEventContent())
+                .url(EventUrl.SAVE_GUESTBOOK_URL_FRONT.getEventUrl() + businessCard.getId().toString() + EventUrl.SAVE_GUESTBOOK_URL_BACK.getEventUrl())
+                .type(NotificationType.NEW_GUESTBOOK)
                 .build();
-        event.publishEvent();
+        eventPublisher.publishEvent(event);
     }
 
     //자신의 명함의 방명록
     public List<GuestBookResponse> getMyGuestBooks(Long businessCardId, Pageable pageable) {
-        List<GuestBook> guestBooks = guestBookRepository.findByBusinessCardId(businessCardId, pageable);
+        List<GuestBook> guestBooks = guestBookRepository.findGuestBooksByBusinessCardId(businessCardId, pageable);
         return guestBooks.stream()
                 .map(g -> GuestBookResponse.guestBookResponse(g))
                 .collect(Collectors.toList());
@@ -89,6 +124,28 @@ public class GuestBookService {
         return guestBooks.stream()
                 .map(g -> GuestBookResponse.guestBookResponse(g))
                 .collect(Collectors.toList());
+    }
+
+    //방명록 좋아요
+    @Transactional
+    public GuestBookLikeResponse guestBookLike(Long businessCardId, Long guestBookId) {
+        GuestBook guestBook = guestBookRepository.findByBusinessCardIdAndId(businessCardId, guestBookId)
+                .orElseThrow(GuestBookNotFound::new);
+
+        guestBook.like();
+
+        return new GuestBookLikeResponse(guestBook.getGuestBookLike());
+    }
+
+    //방명록 좋아요 취소
+    @Transactional
+    public GuestBookLikeResponse cancelGuestBookLike(Long businessCardId, Long guestBookId) {
+        GuestBook guestBook = guestBookRepository.findByBusinessCardIdAndId(businessCardId, guestBookId)
+                .orElseThrow(GuestBookNotFound::new);
+
+        guestBook.cancelLike();
+
+        return new GuestBookLikeResponse(guestBook.getGuestBookLike());
     }
 
 }

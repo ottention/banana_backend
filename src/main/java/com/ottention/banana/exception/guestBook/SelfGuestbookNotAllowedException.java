@@ -1,4 +1,6 @@
-package com.ottention.banana.exception;
+package com.ottention.banana.exception.guestBook;
+
+import com.ottention.banana.exception.Exception;
 
 public class SelfGuestbookNotAllowedException extends Exception {
 
