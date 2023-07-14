@@ -1,6 +1,5 @@
 package com.ottention.banana.service.wallet;
 
-import com.ottention.banana.dto.request.notification.SaveNoteRequest;
 import com.ottention.banana.dto.response.businesscard.NoteResponse;
 import com.ottention.banana.entity.wallet.Note;
 import com.ottention.banana.mapper.NoteMapper;
@@ -28,8 +27,8 @@ public class NoteService {
     }
 
     @Transactional
-    public void create(Long id, SaveNoteRequest request) {
-        noteRepository.save(noteMapper.toEntity(request.getContent(), storedCardRepository.findById(id).orElseThrow(EntityNotFoundException::new)));
+    public void create(Long id, String content) {
+        noteRepository.save(noteMapper.toEntity(content, storedCardRepository.findById(id).orElseThrow(EntityNotFoundException::new)));
     }
 
     @Transactional

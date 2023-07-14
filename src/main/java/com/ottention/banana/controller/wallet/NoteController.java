@@ -1,6 +1,5 @@
 package com.ottention.banana.controller.wallet;
 
-import com.ottention.banana.dto.request.notification.SaveNoteRequest;
 import com.ottention.banana.dto.response.businesscard.NoteResponse;
 import com.ottention.banana.service.wallet.NoteService;
 import jakarta.validation.Valid;
@@ -35,8 +34,8 @@ public class NoteController {
     //노트 작성
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/{id}/notes")
-    public void create(@PathVariable Long id, @RequestBody @Valid SaveNoteRequest request) {
-        noteService.create(id, request);
+    public void create(@PathVariable Long id, @RequestBody @Valid final String content) {
+        noteService.create(id, content);
     }
 
     //노트 삭제
