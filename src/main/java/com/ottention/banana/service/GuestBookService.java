@@ -13,7 +13,8 @@ import com.ottention.banana.exception.UserNotFound;
 import com.ottention.banana.repository.BusinessCardRepository;
 import com.ottention.banana.repository.GuestBookRepository;
 import com.ottention.banana.repository.UserRepository;
-import com.ottention.banana.service.event.SaveGuestBookEvent;
+import com.ottention.banana.service.event.EventContent;
+import com.ottention.banana.service.event.EventUrl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Pageable;
@@ -67,12 +68,13 @@ public class GuestBookService {
     }
 
     private void notifyGuestBookInfo(BusinessCard businessCard, User writer) {
-        SaveGuestBookEvent event = SaveGuestBookEvent.builder()
-                .businessCardId(businessCard.getId())
+        NotificationRequest event = NotificationRequest.builder()
                 .user(businessCard.getUser())
-                .writerNickName(writer.getNickName())
+                .content(writer.getNickName() + EventContent.SAVE_GUESTBOOK_CONTENT.getEventContent())
+                .url(EventUrl.SAVE_GUESTBOOK_URL_FRONT.getEventUrl() + businessCard.getId().toString() + EventUrl.SAVE_GUESTBOOK_URL_BACK.getEventUrl())
+                .type(NotificationType.NEW_GUESTBOOK)
                 .build();
-        event.publishEvent();
+        eventPublisher.publishEvent(event);
     }
 
     //자신의 명함의 방명록

@@ -21,12 +21,11 @@ import java.util.Map;
 
 @Slf4j
 @Service
-@Transactional(readOnly = true)
 @RequiredArgsConstructor
+@Transactional
 public class NotificationService {
-
-    private final EmitterRepository emitterRepository = new EmitterRepositoryImpl();
     private final NotificationRepository notificationRepository;
+    private final EmitterRepository emitterRepository = new EmitterRepositoryImpl();
     private final SseMapper sseMapper;
 
     private static final Long DEFAULT_TIMEOUT = 60L * 1000 * 60 * 6;  //SseEmitter 연결 6시간 지속
@@ -59,7 +58,7 @@ public class NotificationService {
         if (hasLostData(lastEventId)) {
             sendLostData(lastEventId, userId, emitterId, emitter);
         }
-        log.info("알림 구독");
+        log.info("subscribe notification");
         return emitter;
     }
 
@@ -77,7 +76,6 @@ public class NotificationService {
     public void send(User user, String content, String url, NotificationType notificationType) {
         Notification notification = notificationRepository.save(creatNotification(user, notificationType, content, url));
         String userId = String.valueOf(user.getId());
-
         String eventId = userId + "_" + System.currentTimeMillis();
         Map<String, SseEmitter> emitters = emitterRepository.findAllEmitterStartWithByUserId(userId);
         emitters.forEach(
