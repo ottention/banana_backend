@@ -1,17 +1,21 @@
 package com.ottention.banana.service;
 
+import com.ottention.banana.dto.request.notification.NotificationRequest;
 import com.ottention.banana.dto.response.businesscard.BusinessCardLikeResponse;
 import com.ottention.banana.entity.BusinessCard;
 import com.ottention.banana.entity.BusinessCardLike;
 import com.ottention.banana.entity.User;
+import com.ottention.banana.entity.notification.NotificationType;
 import com.ottention.banana.exception.BusinessCardNotFound;
 import com.ottention.banana.exception.UserNotFound;
 import com.ottention.banana.exception.ZeroLikesError;
 import com.ottention.banana.repository.BusinessCardLikeRepository;
 import com.ottention.banana.repository.BusinessCardRepository;
 import com.ottention.banana.repository.UserRepository;
-import com.ottention.banana.service.event.BusinessCardLikeEvent;
+import com.ottention.banana.service.event.EventContent;
+import com.ottention.banana.service.event.EventUrl;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,6 +29,8 @@ public class BusinessCardLikeService {
     private final BusinessCardLikeRepository businessCardLikeRepository;
     private final BusinessCardRepository businessCardRepository;
     private final UserRepository userRepository;
+    private final ApplicationEventPublisher eventPublisher;
+
 
     public BusinessCardLikeResponse like(Long userId, Long businessCardId) {
         User user = userRepository.findById(userId)
@@ -48,11 +54,13 @@ public class BusinessCardLikeService {
     }
 
     private void notifyBusinessCardLikeInfo(BusinessCardLike like) {
-        BusinessCardLikeEvent event = BusinessCardLikeEvent.builder()
-                .businessCardId(like.getBusinessCard().getId())
+        NotificationRequest event = NotificationRequest.builder()
                 .user(like.getUser())
+                .content(EventContent.BUSINESS_CARD_LIKE_CONTENT.getEventContent())
+                .url(EventUrl.BUSINESS_CARD_LIKE_URL.getEventUrl() + like.getBusinessCard().getId().toString())
+                .type(NotificationType.BUSINESS_CARD_LIKE)
                 .build();
-        event.publishEvent();
+        eventPublisher.publishEvent(event);
     }
 
     public BusinessCardLikeResponse cancelLike(Long userId, Long businessCardId) {
