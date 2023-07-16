@@ -7,6 +7,7 @@ import com.ottention.banana.dto.response.businesscard.TagResponse;
 import com.ottention.banana.service.ChartService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -23,8 +24,8 @@ public class ChartController {
     }
 
     @GetMapping("/businessCard/topTenBusinessCards")
-    public List<BusinessCardResponse> getTopTensBusinessCards(@Login LoginUser loginUser) {
-        return chartService.getTopTenBusinessCards(loginUser.getId());
+    public List<BusinessCardResponse> getTopTensBusinessCards(@RequestParam String name, @Login LoginUser loginUser) {
+        return chartService.getTopTenBusinessCards(name, loginUser.getId());
     }
 
 }
