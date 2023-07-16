@@ -27,7 +27,7 @@ public class TagService {
 
     @Transactional
     public void saveTag(List<String> tags, BusinessCard businessCard) {
-        if (tags.size() > MAX_TAG_COUNT) {
+        if (tags.size() >MAX_TAG_COUNT) {
             throw new TagLimitExceededException();
         }
 
@@ -60,9 +60,7 @@ public class TagService {
 
     private void deleteBusinessCardTags(Tag tag) {
         List<BusinessCardTag> businessCardTags = businessCardTagRepository.findByTagId(tag.getId());
-        for (BusinessCardTag businessCardTag : businessCardTags) {
-            businessCardTagRepository.delete(businessCardTag);
-        }
+        businessCardTagRepository.deleteAllInBatch(businessCardTags);
     }
 
 }

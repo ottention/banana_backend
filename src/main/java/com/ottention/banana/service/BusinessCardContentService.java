@@ -53,12 +53,8 @@ public class BusinessCardContentService {
 
     @Transactional
     public void deleteBusinessCardContents(List<BusinessCardContent> frontContents, List<BusinessCardContent> backContents) {
-        for (BusinessCardContent frontContent : frontContents) {
-            businessCardContentRepository.delete(frontContent);
-        }
-        for (BusinessCardContent backContent : backContents) {
-            businessCardContentRepository.delete(backContent);
-        }
+        businessCardContentRepository.deleteAllInBatch(frontContents);
+        businessCardContentRepository.deleteAllInBatch(backContents);
     }
 
 }
