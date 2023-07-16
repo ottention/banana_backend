@@ -10,7 +10,7 @@ import org.hibernate.validator.constraints.Length;
 @AllArgsConstructor
 public class SaveGuestBookRequest {
 
-    @Length(max = 30, message = "방명록 글자 수는 공백포함 30을 넘길 수 없습니다.")
+    @Length(max = 24, message = "방명록은 최대 24자까지 작성 가능합니다.")
     private String content;
 
 }
