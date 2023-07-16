@@ -12,6 +12,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 import static com.ottention.banana.AppConstant.ADDRESS;
 
 @Slf4j
@@ -21,6 +23,11 @@ public class BusinessCardController {
 
     private final BusinessCardService businessCardService;
     private final QRCodeService qrCodeService;
+
+    @GetMapping("/businessCard/home")
+    public List<BusinessCardIdResponse> home(@Login LoginUser loginUser) {
+        return businessCardService.getBusinessCardIds(loginUser.getId());
+    }
 
     @PostMapping("/businessCard/save")
     public BusinessCardIdResponse saveBusinessCard(@Login LoginUser user, @RequestBody SaveBusinessCardRequest request) {
@@ -45,7 +52,7 @@ public class BusinessCardController {
     }
 
     @GetMapping("/businessCard/{businessCardId}/qrcode")
-    public QRCodeAddressResponse getQRCodeV3(@PathVariable Long businessCardId) {
+    public QRCodeAddressResponse getQRCode(@PathVariable Long businessCardId) {
         return qrCodeService.getQRCodeAddress(businessCardId);
     }
 
