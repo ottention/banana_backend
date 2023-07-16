@@ -9,6 +9,7 @@ import com.ottention.banana.repository.TagRepository;
 import com.ottention.banana.repository.TopTenTagRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -38,16 +39,16 @@ public class ChartService {
     }
 
     @Transactional
-    @Scheduled(fixedRate = 20000)
-    public void generateRandomTop10Tags() {
+    @Scheduled(cron = "0 0 0 ? * MON")
+    public void generateRandomTopTenTags() {
         List<String> tags = tagRepository.findTagsWithDuplicateCounts();
         log.info("tagsSize = {}", tags.size());
         Collections.shuffle(tags);
-        List<String> randomTop10Tags = tags.subList(0, Math.min(10, tags.size()));
+        List<String> randomTopTenTags = tags.subList(0, Math.min(10, tags.size()));
 
         topTenTagRepository.deleteAll();
 
-        for (String tag : randomTop10Tags) {
+        for (String tag : randomTopTenTags) {
             log.info("tag = {}", tag);
             TopTenTag topTenTag = new TopTenTag();
             topTenTag.updateTopTenTag(tag);
@@ -55,14 +56,16 @@ public class ChartService {
         }
     }
 
-    public List<BusinessCardResponse> getTopTenBusinessCards(Long userId) {
+    public List<BusinessCardResponse> getTopTenBusinessCards(String name, Long userId) {
         List<BusinessCardResponse> businessCardResponses = new ArrayList<>();
-        List<BusinessCard> businessCards = businessCardRepository.findTop10ByIsPublicOrderByLikeCountDesc(true);
-        log.info("businessCardsSize = {}", businessCards.size());
 
-        for (BusinessCard businessCard : businessCards) {
-            BusinessCardResponse businessCardResponse = businessCardService.getBusinessCard(userId, businessCard.getId());
-            businessCardResponses.add(businessCardResponse);
+        PageRequest pageRequest = PageRequest.of(0, 10);
+        List<BusinessCard> topTenBusinessCards = businessCardRepository.findTop10ByTagNameOrderByLikeCountDesc(name, pageRequest);
+        log.info("topTenBusinessCards.size() = {}", topTenBusinessCards.size());
+
+        for (BusinessCard topTenBusinessCard : topTenBusinessCards) {
+            BusinessCardResponse businessCard = businessCardService.getBusinessCard(userId, topTenBusinessCard.getId());
+            businessCardResponses.add(businessCard);
         }
 
         return businessCardResponses;
