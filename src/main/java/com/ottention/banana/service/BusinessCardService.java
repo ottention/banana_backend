@@ -1,11 +1,13 @@
 package com.ottention.banana.service;
 
 import com.ottention.banana.dto.request.SaveBusinessCardRequest;
+import com.ottention.banana.dto.response.businesscard.BusinessCardIdResponse;
 import com.ottention.banana.dto.response.businesscard.BusinessCardResponse;
 import com.ottention.banana.dto.response.businesscard.BusinessCardSettingStatus;
 import com.ottention.banana.entity.*;
 import com.ottention.banana.exception.*;
 import com.ottention.banana.repository.BusinessCardRepository;
+import com.ottention.banana.repository.BusinessCardTagRepository;
 import com.ottention.banana.repository.GuestBookRepository;
 import com.ottention.banana.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -13,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.ottention.banana.AppConstant.*;
@@ -37,7 +40,7 @@ public class BusinessCardService {
                 .orElseThrow(UserNotFound::new);
 
         List<BusinessCard> businessCards = businessCardRepository.findByUserId(userId);
-        if (businessCards.size() >= MAX_BUSINESS_CARD_COUNT) {
+        if (businessCards.size() >=MAX_BUSINESS_CARD_COUNT) {
             throw new BusinessCardLimitExceededException();
         }
 
@@ -47,7 +50,7 @@ public class BusinessCardService {
         log.info("backTemplateColor = {}", request.getBackTemplateColor());
 
         //처음 명함은 무조건 대표 명함
-        if (businessCards.size() == INITIAL_BUSINESS_CARD_COUNT) {
+        if (businessCards.size() ==INITIAL_BUSINESS_CARD_COUNT) {
             BusinessCard businessCard = createInitialBusinessCard(request, user);
             return businessCardRepository.save(businessCard).getId();
         }
@@ -56,6 +59,16 @@ public class BusinessCardService {
 
         BusinessCard businessCard = createSubsequentBusinessCard(request, user);
         return businessCardRepository.save(businessCard).getId();
+    }
+
+    public List<BusinessCardIdResponse> getBusinessCardIds(Long userId) {
+        List<BusinessCard> businessCards = businessCardRepository.findByUserId(userId);
+        List<BusinessCardIdResponse> businessCardIdResponses = new ArrayList<>();
+        for (BusinessCard businessCard : businessCards) {
+            BusinessCardIdResponse businessCardIdResponse = new BusinessCardIdResponse(businessCard.getId());
+            businessCardIdResponses.add(businessCardIdResponse);
+        }
+        return businessCardIdResponses;
     }
 
     @Transactional
@@ -68,20 +81,7 @@ public class BusinessCardService {
 
         validateSameUser(user, businessCard);
 
-        List<BusinessCardContent> frontContents = businessCardContentService.getFrontContents(businessCardId);
-        List<BusinessCardContent> backContents = businessCardContentService.getBackContents(businessCardId);
-        businessCardContentService.deleteBusinessCardContents(frontContents, backContents);
-
-        List<Image> frontImages = imageService.getFrontImages(businessCardId);
-        List<Image> backImages = imageService.getBackImages(businessCardId);
-        imageService.deleteImages(frontImages, backImages);
-
-        List<Link> frontLinks = linkService.getFrontLinks(businessCardId);
-        List<Link> backLinks = linkService.getBackLinks(businessCardId);
-        linkService.deleteLinks(frontLinks, backLinks);
-
-        List<Tag> tags = tagService.getTags(businessCardId);
-        tagService.deleteTags(tags);
+        deleteBusinessCardContents(businessCardId);
 
         businessCardContentService.saveBusinessCardContents(request, businessCard);
         imageService.saveImage(request, businessCard);
@@ -181,7 +181,26 @@ public class BusinessCardService {
         List<GuestBook> guestBooks = guestBookRepository.findAllByBusinessCardId(businessCardId);
         guestBookRepository.deleteAllInBatch(guestBooks);
 
+        deleteBusinessCardContents(businessCardId);
+
         businessCardRepository.delete(businessCard);
+    }
+
+    private void deleteBusinessCardContents(Long businessCardId) {
+        List<BusinessCardContent> frontContents = businessCardContentService.getFrontContents(businessCardId);
+        List<BusinessCardContent> backContents = businessCardContentService.getBackContents(businessCardId);
+        businessCardContentService.deleteBusinessCardContents(frontContents, backContents);
+
+        List<Image> frontImages = imageService.getFrontImages(businessCardId);
+        List<Image> backImages = imageService.getBackImages(businessCardId);
+        imageService.deleteImages(frontImages, backImages);
+
+        List<Link> frontLinks = linkService.getFrontLinks(businessCardId);
+        List<Link> backLinks = linkService.getBackLinks(businessCardId);
+        linkService.deleteLinks(frontLinks, backLinks);
+
+        List<Tag> tags = tagService.getTags(businessCardId);
+        tagService.deleteTags(tags);
     }
 
 }
