@@ -1,11 +1,13 @@
 package com.ottention.banana.service;
 
 import com.ottention.banana.dto.request.SaveGuestBookRequest;
+import com.ottention.banana.dto.request.notification.NotificationRequest;
 import com.ottention.banana.dto.response.GuestBookLikeResponse;
 import com.ottention.banana.dto.response.GuestBookResponse;
 import com.ottention.banana.entity.BusinessCard;
 import com.ottention.banana.entity.GuestBook;
 import com.ottention.banana.entity.User;
+import com.ottention.banana.entity.notification.NotificationType;
 import com.ottention.banana.exception.BusinessCardNotFound;
 import com.ottention.banana.exception.InvalidRequest;
 import com.ottention.banana.exception.guestBook.GuestBookNotFound;
@@ -37,9 +39,9 @@ public class GuestBookService {
 
     /**
      *
-     * @param userId : 방명록 작성자 id
-     * @param businessCardId : 명함 id
-     * @param request : 방명록 내용
+     *@paramuserId:방명록 작성자id
+     *@parambusinessCardId:명함id
+     *@paramrequest:방명록 내용
      */
     @Transactional
     public Long saveGuestBook(Long userId, Long businessCardId, SaveGuestBookRequest request) {
@@ -96,7 +98,7 @@ public class GuestBookService {
     @Transactional
     public void deleteMyBusinessCardGuestBook(Long businessCardId, Long guestBookId) {
         GuestBook guestBook = guestBookRepository.findByBusinessCardIdAndId(businessCardId, guestBookId)
-                .orElseThrow();
+                .orElseThrow(GuestBookNotFound::new);
         guestBookRepository.delete(guestBook);
     }
 
