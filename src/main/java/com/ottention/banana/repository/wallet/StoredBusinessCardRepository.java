@@ -11,7 +11,6 @@ import java.util.List;
 public interface StoredBusinessCardRepository extends JpaRepository<StoredBusinessCard, Long> {
     List<StoredBusinessCard> findAllByUserId(Long userId, Pageable pageable);
     List<StoredBusinessCard> findTop2ByUserIdOrderByModifiedDateDesc(Long userId);
-    List<StoredBusinessCard> findAllByUserIdAndIsBookmarkedTrue(Long userId, Pageable pageable);
     List<StoredBusinessCard> findAllByCategoryId(Long categoryId, Pageable pageable);
 }
 
