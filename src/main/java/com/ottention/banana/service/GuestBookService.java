@@ -37,12 +37,6 @@ public class GuestBookService {
     private final UserRepository userRepository;
     private final ApplicationEventPublisher eventPublisher;
 
-    /**
-     *
-     *@paramuserId:방명록 작성자id
-     *@parambusinessCardId:명함id
-     *@paramrequest:방명록 내용
-     */
     @Transactional
     public Long saveGuestBook(Long userId, Long businessCardId, SaveGuestBookRequest request) {
         User user = userRepository.findById(userId)
@@ -63,6 +57,7 @@ public class GuestBookService {
                 .content(request.getContent())
                 .writer(user.getNickName())
                 .build();
+
         //방명록 작성 알림 전송
         notifyGuestBookInfo(businessCard, user);
         return guestBookRepository.save(guestBook).getId();
