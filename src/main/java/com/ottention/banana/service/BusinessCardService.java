@@ -40,7 +40,7 @@ public class BusinessCardService {
                 .orElseThrow(UserNotFound::new);
 
         List<BusinessCard> businessCards = businessCardRepository.findByUserId(userId);
-        if (businessCards.size() >=MAX_BUSINESS_CARD_COUNT) {
+        if (businessCards.size() >= MAX_BUSINESS_CARD_COUNT) {
             throw new BusinessCardLimitExceededException();
         }
 
@@ -50,7 +50,7 @@ public class BusinessCardService {
         log.info("backTemplateColor = {}", request.getBackTemplateColor());
 
         //처음 명함은 무조건 대표 명함
-        if (businessCards.size() ==INITIAL_BUSINESS_CARD_COUNT) {
+        if (businessCards.size() == INITIAL_BUSINESS_CARD_COUNT) {
             BusinessCard businessCard = createInitialBusinessCard(request, user);
             return businessCardRepository.save(businessCard).getId();
         }

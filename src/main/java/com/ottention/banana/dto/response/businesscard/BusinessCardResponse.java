@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 public class BusinessCardResponse {
     private Long businessCardId;
     private Boolean isPublic;
-    private Boolean isPresent;
+    private Boolean isRepresent;
     private int likeCount;
 
     private List<BusinessCardContentDto> frontContents;
@@ -36,7 +36,7 @@ public class BusinessCardResponse {
                                 ) {
         this.businessCardId = businessCard.getId();
         this.isPublic = businessCard.getIsPublic();
-        this.isPresent = businessCard.getIsRepresent();
+        this.isRepresent = businessCard.getIsRepresent();
         this.likeCount = businessCard.getLikeCount();
         this.frontContents = frontContents.stream().map(c -> new BusinessCardContentDto(c))
                 .collect(Collectors.toList());

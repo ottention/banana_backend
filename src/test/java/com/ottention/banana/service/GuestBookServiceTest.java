@@ -234,7 +234,7 @@ class GuestBookServiceTest {
         guestBookRepository.save(guestBook);
 
         //then
-        assertThatThrownBy(() -> guestBookService.deleteMyWrittenGuestBook(user1.getId(), businessCard.getId()))
+        assertThatThrownBy(() -> guestBookService.deleteMyWrittenGuestBook(user1.getId(), guestBook.getId()))
                 .isInstanceOf(InvalidRequest.class);
     }
 
