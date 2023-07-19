@@ -1,13 +1,15 @@
 package com.ottention.banana.service;
 
-import com.ottention.banana.entity.User;
-import com.ottention.banana.repository.UserRepository;
 import com.ottention.banana.dto.response.google.GoogleOAuth2UserInfo;
 import com.ottention.banana.dto.response.kakao.GetMemberInfoResponse;
+import com.ottention.banana.entity.User;
+import com.ottention.banana.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+@Slf4j
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -32,9 +34,10 @@ public class UserService {
     }
 
     private Long saveUser(User user) {
+        log.info("email = {}", user.getEmail());
         return userRepository.findByEmail(user.getEmail())
                 .map(User::getId)
-                .orElseGet(userRepository.save(user)::getId);
+                .orElseGet(() -> userRepository.save(user).getId());
     }
 
 }
