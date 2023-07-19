@@ -1,6 +1,10 @@
 package com.ottention.banana.service;
 
 import com.ottention.banana.dto.response.businesscard.CategoryResponse;
+import com.ottention.banana.entity.User;
+import com.ottention.banana.entity.wallet.Category;
+import com.ottention.banana.repository.UserRepository;
+import com.ottention.banana.repository.wallet.CategoryRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -15,18 +19,27 @@ class CategoryServiceTest {
 
     @Autowired
     private CategoryService service;
+    @Autowired
+    private CategoryRepository repository;
+    @Autowired
+    private UserRepository userRepository;
 
     @Test
     void testCategoryService() {
         //given
-        Long id = 1L;
+        User user = User.builder()
+                .email("a")
+                .nickName("a")
+                .build();
+        userRepository.save(user);
+        Category category = new Category("category-name", user);
+        repository.save(category);
 
         //when
-        List<CategoryResponse> result = service.getCategories(id);
+        List<CategoryResponse> result = service.getCategories(user.getId());
 
         //then
         assertThat(result).isNotEmpty();
-        result.forEach(c -> System.out.println("c.getCategoryName() = " + c.getCategoryName()));
     }
 
 }
