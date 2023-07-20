@@ -10,9 +10,9 @@ import com.ottention.banana.entity.User;
 import com.ottention.banana.entity.notification.NotificationType;
 import com.ottention.banana.exception.BusinessCardNotFound;
 import com.ottention.banana.exception.InvalidRequest;
+import com.ottention.banana.exception.UserNotFound;
 import com.ottention.banana.exception.guestBook.GuestBookNotFound;
 import com.ottention.banana.exception.guestBook.SelfGuestbookNotAllowedException;
-import com.ottention.banana.exception.UserNotFound;
 import com.ottention.banana.repository.BusinessCardRepository;
 import com.ottention.banana.repository.GuestBookRepository;
 import com.ottention.banana.repository.UserRepository;
@@ -26,6 +26,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static com.ottention.banana.AppConstant.MAX_GUEST_BOOK_COUNT;
 
 @Service
 @Transactional(readOnly = true)
@@ -48,6 +50,11 @@ public class GuestBookService {
         //자기 자신의 명함엔 방명록을 남길 수 없음
         if (user.getId().equals(businessCard.getUser().getId())) {
             throw new SelfGuestbookNotAllowedException();
+        }
+
+        List<GuestBook> guestBooks = guestBookRepository.findGuestBooksByBusinessCardIdAndUserId(businessCardId, userId);
+        if (guestBooks.size() == MAX_GUEST_BOOK_COUNT) {
+            throw new IllegalArgumentException("타인 명함의 방명록은 최대 4개 작성할 수 있습니다.");
         }
 
         GuestBook guestBook = GuestBook.builder()
@@ -107,6 +114,14 @@ public class GuestBookService {
         eventPublisher.publishEvent(event);
     }
 
+    //명함 상세페이지 방명록 2개
+    public List<GuestBookResponse> getTwoGuestBooks(Long businessCardId, Pageable pageable) {
+        List<GuestBook> guestBooks = guestBookRepository.findGuestBooksByBusinessCardId(businessCardId, pageable);
+        return guestBooks.stream()
+                .map(GuestBookResponse::guestBookResponse)
+                .collect(Collectors.toList());
+    }
+
     //자신의 명함의 방명록
     public List<GuestBookResponse> getMyGuestBooks(Long businessCardId, Pageable pageable) {
         List<GuestBook> guestBooks = guestBookRepository.findGuestBooksByBusinessCardId(businessCardId, pageable);
@@ -118,6 +133,15 @@ public class GuestBookService {
     //자신이 작성한 방명록
     public List<GuestBookResponse> getMyWrittenGuestBooks(Long userId, Pageable pageable) {
         List<GuestBook> guestBooks = guestBookRepository.findByUserId(userId, pageable);
+        return guestBooks.stream()
+                .map(g -> GuestBookResponse.guestBookResponse(g))
+                .collect(Collectors.toList());
+    }
+
+    //타인 명함의 방명록
+    public List<GuestBookResponse> getOtherGuestBooks(Long userId, Long businessCardId) {
+        List<GuestBook> guestBooks = guestBookRepository
+                .findGuestBooksByBusinessCardIdAndUserId(businessCardId, userId);
         return guestBooks.stream()
                 .map(g -> GuestBookResponse.guestBookResponse(g))
                 .collect(Collectors.toList());
