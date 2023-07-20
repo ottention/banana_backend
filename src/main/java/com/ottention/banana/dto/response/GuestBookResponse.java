@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 @Getter
 public class GuestBookResponse {
 
+    private final Long guestBookId;
     private final String writer;
     private final String content;
     private final Boolean isGuestBookLike;
@@ -19,6 +20,7 @@ public class GuestBookResponse {
 
     public static GuestBookResponse guestBookResponse(GuestBook guestBook) {
         return GuestBookResponse.builder()
+                .guestBookId(guestBook.getId())
                 .content(guestBook.getContent())
                 .writer(guestBook.getWriter())
                 .isGuestBookLike(guestBook.getGuestBookLike())
@@ -27,7 +29,8 @@ public class GuestBookResponse {
     }
 
     @Builder
-    public GuestBookResponse(String writer, String content, Boolean isGuestBookLike, LocalDateTime localDateTime) {
+    public GuestBookResponse(Long guestBookId, String writer, String content, Boolean isGuestBookLike, LocalDateTime localDateTime) {
+        this.guestBookId = guestBookId;
         this.writer = writer;
         this.content = content;
         this.isGuestBookLike = isGuestBookLike;
