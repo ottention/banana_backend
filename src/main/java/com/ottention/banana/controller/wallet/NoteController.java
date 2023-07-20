@@ -39,6 +39,13 @@ public class NoteController {
         noteService.create(id, request);
     }
 
+    //노트 수정
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PutMapping("/{id}/notes/{noteId}")
+    public void update(@PathVariable Long noteId, @RequestBody @Valid SaveNoteRequest request) {
+        noteService.update(noteId, request);
+    }
+
     //노트 삭제
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping("/{id}/notes/{noteId}")
