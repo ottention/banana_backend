@@ -1,11 +1,11 @@
 package com.ottention.banana.controller;
 
 import com.ottention.banana.config.Login;
-import com.ottention.banana.dto.request.*;
+import com.ottention.banana.dto.request.LoginUser;
+import com.ottention.banana.dto.request.SaveBusinessCardRequest;
 import com.ottention.banana.dto.response.QRCodeAddressResponse;
 import com.ottention.banana.dto.response.businesscard.BusinessCardIdResponse;
 import com.ottention.banana.dto.response.businesscard.BusinessCardResponse;
-import com.ottention.banana.dto.response.businesscard.BusinessCardSettingStatus;
 import com.ottention.banana.service.BusinessCardService;
 import com.ottention.banana.service.QRCodeService;
 import lombok.RequiredArgsConstructor;
@@ -39,11 +39,6 @@ public class BusinessCardController {
     @PatchMapping("/businessCard/{businessCardId}/update")
     public void updateBusinessCard(@Login LoginUser user, @PathVariable Long businessCardId, @RequestBody SaveBusinessCardRequest request) {
         businessCardService.updateBusinessCard(user.getId(), businessCardId, request);
-    }
-
-    @GetMapping("/businessCard/representative")
-    public BusinessCardSettingStatus getSettingStatusMessage(@Login LoginUser user) {
-        return businessCardService.getSettingStatusMessage(user.getId());
     }
 
     @GetMapping("/businessCard/{businessCardId}")
