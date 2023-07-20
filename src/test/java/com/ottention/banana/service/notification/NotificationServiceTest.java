@@ -24,7 +24,11 @@ class NotificationServiceTest {
     @Test
     void 알림_구독_진행() {
         //given
-        User user = userRepository.findById(1L).orElseThrow(IllegalArgumentException::new);
+        User user = User.builder()
+                .email("a")
+                .nickName("a")
+                .build();
+        userRepository.save(user);
         String lastEventId = "";
 
         //when, then
@@ -34,7 +38,11 @@ class NotificationServiceTest {
     @Test
     void 알림_메세지_전송() {
         //given
-        User user = userRepository.findById(1L).orElseThrow(IllegalArgumentException::new);
+        User user = User.builder()
+                .email("a")
+                .nickName("a")
+                .build();
+        userRepository.save(user);
         String lastEventId = "";
         notificationService.subscribe(user.getId(), lastEventId);
 

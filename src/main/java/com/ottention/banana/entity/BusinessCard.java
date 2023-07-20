@@ -34,6 +34,9 @@ public class BusinessCard extends BaseEntity {
     @OneToMany(mappedBy = "businessCard", cascade = ALL)
     private List<BusinessCardContent> businessCardContents = new ArrayList<>();
 
+    @OneToMany(mappedBy = "businessCard", cascade = ALL)
+    private List<BusinessCardTag> businessCardTags = new ArrayList<>();
+
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;

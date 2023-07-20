@@ -22,26 +22,24 @@ public class StoredBusinessCardService {
 
     //저장된 명함 조회
     public List<StoredCardPreviewResponse> getAllStoredBusinessCards(Long id, Pageable pageable) {
-        List<StoredBusinessCard> storedBusinessCards = storedCardRepository.findAllByUserId(id, pageable);
-        return toResponseList(storedBusinessCards);
+        return toResponseList(storedCardRepository.findAllByUserId(id, pageable));
     }
 
     //즐겨찾기 최근 2개 조회
     public List<StoredCardPreviewResponse> getTwoBookmarkedCards(Long id) {
-        List<StoredBusinessCard> storedBusinessCards = storedCardRepository.findTop2ByUserIdOrderByModifiedDateDesc(id);
-        return toResponseList(storedBusinessCards);
+        return toResponseList(storedCardRepository.findTop2ByUserIdOrderByModifiedDateDesc(id));
     }
 
     //즐겨찾기 전체 조회
     public List<StoredCardPreviewResponse> getBookmarkedStoredCards(Long id, Pageable pageable) {
-        List<StoredBusinessCard> storedBusinessCards = storedCardRepository.findAllByUserIdAndIsBookmarkedTrue(id, pageable);
-        return toResponseList(storedBusinessCards);
+        return toResponseList(storedCardRepository.findAllByUserId(id, pageable).stream()
+                .filter(StoredBusinessCard::getIsBookmarked)
+                .toList());
     }
 
     //카테고리별 명함
     public List<StoredCardPreviewResponse> getStoredCardByCategory(Long categoryId, Pageable pageable) {
-        List<StoredBusinessCard> storedBusinessCards = storedCardRepository.findAllByCategoryId(categoryId, pageable);
-        return toResponseList(storedBusinessCards);
+        return toResponseList(storedCardRepository.findAllByCategoryId(categoryId, pageable));
     }
 
     private List<StoredCardPreviewResponse> toResponseList(List<StoredBusinessCard> storedCards) {
