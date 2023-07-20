@@ -36,4 +36,9 @@ public class NoteService {
     public void delete(Long noteId) {
         noteRepository.delete(noteRepository.findById(noteId).orElseThrow(EntityNotFoundException::new));
     }
+
+    public void update(Long noteId, SaveNoteRequest request) {
+        Note note = noteRepository.findById(noteId).orElseThrow(EntityNotFoundException::new);
+        note.update(request.getContent());
+    }
 }

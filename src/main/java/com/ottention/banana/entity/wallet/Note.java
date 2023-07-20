@@ -30,4 +30,8 @@ public class Note extends BaseEntity {
         this.content = content;
         this.storedBusinessCard = storedBusinessCard;
     }
+
+    public void update(String content) {
+        this.content = content;
+    }
 }
