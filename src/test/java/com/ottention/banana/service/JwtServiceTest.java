@@ -6,19 +6,25 @@ import com.ottention.banana.exception.jwt.RefreshTokenNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+@SpringBootTest
 class JwtServiceTest {
 
     private JwtService jwtService;
     private JwtConfig jwtConfig;
 
+    @Value("${jwt.jwt-key}")
+    private String jwtKey;
+
     @BeforeEach
     void setUp() {
         jwtConfig = new JwtConfig();
-        jwtConfig.setJwtKey("secretKey");
+        jwtConfig.setJwtKey(jwtKey);
         jwtService = new JwtService(jwtConfig);
     }
 
