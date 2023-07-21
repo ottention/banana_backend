@@ -198,7 +198,7 @@ class GuestBookControllerTest {
 
     @Test
     @DisplayName("자신의 명함 방명록 조회 API 테스트")
-    void getBusinessCardGuestBookTest() throws Exception {
+    void getBusinessCardGuestBookApiTest() throws Exception {
         //given
         User user1 = User.builder()
                 .email("a")
@@ -241,4 +241,51 @@ class GuestBookControllerTest {
                 .andExpect(jsonPath("$[0].content").value("방명록 내용19"))
                 .andDo(document("guestBook-getBusinessCardGuestBook"));
     }
+
+    @Test
+    @DisplayName("명함 상세페이지 방명록 2개 조회 API 테스트")
+    void getTwoGuestBooksApiTest() throws Exception {
+        //given
+        User user1 = User.builder()
+                .email("a")
+                .nickName("a")
+                .build();
+
+        User user2 = User.builder()
+                .email("a")
+                .nickName("a")
+                .build();
+
+        userRepository.save(user1);
+        userRepository.save(user2);
+
+        String accessToken = jwtService.generateAccessToken(user2.getId());
+
+        BusinessCard businessCard = BusinessCard.builder()
+                .user(user1)
+                .isPublic(true)
+                .isRepresent(true)
+                .build();
+
+        businessCardRepository.save(businessCard);
+
+        for (int i = 0; i < 10; i++) {
+            GuestBook guestBook = GuestBook.builder()
+                    .content("방명록 내용" + i)
+                    .guestBookLike(false)
+                    .user(user2)
+                    .businessCard(businessCard)
+                    .writer(user2.getNickName())
+                    .build();
+
+            guestBookRepository.save(guestBook);
+        }
+
+        mockMvc.perform(get("/banana/businessCard/{businessCardId}/twoGuestBooks", businessCard.getId())
+                .contentType(APPLICATION_JSON)
+                .header("Authorization", accessToken))
+                .andExpect(jsonPath("$[0].content").value("방명록 내용9"))
+                .andExpect(jsonPath("$[1].content").value("방명록 내용8"));
+    }
+
 }
