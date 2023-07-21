@@ -14,9 +14,9 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
 
@@ -57,18 +57,13 @@ public class ChartService {
     }
 
     public List<BusinessCardResponse> getTopTenBusinessCards(String name, Long userId) {
-        List<BusinessCardResponse> businessCardResponses = new ArrayList<>();
-
         PageRequest pageRequest = PageRequest.of(0, 10);
         List<BusinessCard> topTenBusinessCards = businessCardRepository.findTop10ByTagNameOrderByLikeCountDesc(name, pageRequest);
         log.info("topTenBusinessCards.size() = {}", topTenBusinessCards.size());
 
-        for (BusinessCard topTenBusinessCard : topTenBusinessCards) {
-            BusinessCardResponse businessCard = businessCardService.getBusinessCard(userId, topTenBusinessCard.getId());
-            businessCardResponses.add(businessCard);
-        }
-
-        return businessCardResponses;
+        return topTenBusinessCards.stream()
+                .map(topTenBusinessCard -> businessCardService.getBusinessCard(userId, topTenBusinessCard.getId()))
+                .collect(Collectors.toList());
     }
 
 }
