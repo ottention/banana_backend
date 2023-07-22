@@ -7,4 +7,5 @@ import java.util.Optional;
 
 public interface BusinessCardLikeRepository extends JpaRepository<BusinessCardLike, Long> {
     Optional<BusinessCardLike> findByUserIdAndBusinessCardId(Long userId, Long businessCardId);
+    Boolean existsByUserIdAndBusinessCardId(Long userId, Long businessCardId);
 }
