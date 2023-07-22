@@ -32,11 +32,7 @@ public class BusinessCardLike extends BaseEntity {
     private User user;
 
     @Builder
-    public BusinessCardLike(BusinessCard businessCard, User user, Optional<BusinessCardLike> like) {
-        //좋아요 중복 검증
-        if (!like.isEmpty()) {
-            throw new DuplicationLikeException();
-        }
+    public BusinessCardLike(BusinessCard businessCard, User user) {
         //좋아요 카운트 증가
         businessCard.updateLikeCount(businessCard.getLikeCount() + 1);
         this.businessCard = businessCard;
