@@ -25,7 +25,7 @@ import java.util.Map;
 @Transactional
 public class NotificationService {
     private final NotificationRepository notificationRepository;
-    private final EmitterRepository emitterRepository = new EmitterRepositoryImpl();
+    private final EmitterRepository emitterRepository;
     private final SseMapper sseMapper;
 
     private static final Long DEFAULT_TIMEOUT = 60L * 1000 * 60 * 6;  //SseEmitter 연결 6시간 지속
