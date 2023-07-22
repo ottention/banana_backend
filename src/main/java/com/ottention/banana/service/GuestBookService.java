@@ -9,6 +9,7 @@ import com.ottention.banana.entity.GuestBook;
 import com.ottention.banana.entity.User;
 import com.ottention.banana.entity.notification.NotificationType;
 import com.ottention.banana.exception.BusinessCardNotFound;
+import com.ottention.banana.exception.GuestBookLimitExceededException;
 import com.ottention.banana.exception.InvalidRequest;
 import com.ottention.banana.exception.UserNotFound;
 import com.ottention.banana.exception.guestBook.GuestBookNotFound;
@@ -52,9 +53,10 @@ public class GuestBookService {
             throw new SelfGuestbookNotAllowedException();
         }
 
+        //방명록 작성은 최대 4개
         List<GuestBook> guestBooks = guestBookRepository.findGuestBooksByBusinessCardIdAndUserId(businessCardId, userId);
         if (guestBooks.size() == MAX_GUEST_BOOK_COUNT) {
-            throw new IllegalArgumentException("타인 명함의 방명록은 최대 4개 작성할 수 있습니다.");
+            throw new GuestBookLimitExceededException();
         }
 
         GuestBook guestBook = GuestBook.builder()
@@ -76,6 +78,7 @@ public class GuestBookService {
         GuestBook guestBook = guestBookRepository.findById(guestBookId)
                 .orElseThrow(GuestBookNotFound::new);
 
+        //자신이 쓴 방명록이 아닐 경우
         if (!guestBook.getUser().getId().equals(userId)) {
             throw new InvalidRequest();
         }
@@ -89,6 +92,7 @@ public class GuestBookService {
         GuestBook guestBook = guestBookRepository.findById(guestBookId)
                 .orElseThrow(GuestBookNotFound::new);
 
+        //자신이 쓴 방명록이 아닐 경우
         if (!guestBook.getUser().getId().equals(userId)) {
             throw new InvalidRequest();
         }
