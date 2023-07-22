@@ -5,6 +5,8 @@ import com.ottention.banana.dto.response.GuestBookResponse;
 import com.ottention.banana.entity.BusinessCard;
 import com.ottention.banana.entity.GuestBook;
 import com.ottention.banana.entity.User;
+import com.ottention.banana.exception.BusinessCardNotFound;
+import com.ottention.banana.exception.GuestBookLimitExceededException;
 import com.ottention.banana.exception.InvalidRequest;
 import com.ottention.banana.exception.guestBook.SelfGuestbookNotAllowedException;
 import com.ottention.banana.repository.BusinessCardRepository;
@@ -81,6 +83,42 @@ class GuestBookServiceTest {
         assertThat(guestBook.getContent()).isEqualTo("방명록 내용 테스트");
         assertThat(guestBook.getUser()).isEqualTo(user2);
         assertThat(guestBook.getBusinessCard()).isEqualTo(businessCard);
+    }
+
+    @Test
+    @DisplayName("방명록 4개 초과 작성 오류 테스트")
+    void GuestBookLimitExceededExceptionTest() {
+        //given
+        User user1 = User.builder()
+                .email("a")
+                .nickName("a")
+                .build();
+
+        User user2 = User.builder()
+                .email("a")
+                .nickName("a")
+                .build();
+
+        userRepository.save(user1);
+        userRepository.save(user2);
+
+        BusinessCard businessCard = BusinessCard.builder()
+                .user(user1)
+                .isPublic(true)
+                .isRepresent(true)
+                .build();
+
+        businessCardRepository.save(businessCard);
+
+        for (int i = 0; i < 4; i++) {
+            SaveGuestBookRequest saveGuestBookRequest = new SaveGuestBookRequest("방명록 내용 테스트");
+            guestBookService.saveGuestBook(user2.getId(), businessCard.getId(), saveGuestBookRequest);
+        }
+
+        //then
+        SaveGuestBookRequest saveGuestBookRequest = new SaveGuestBookRequest("방명록 내용 테스트");
+        assertThatThrownBy(() -> guestBookService.saveGuestBook(user2.getId(), businessCard.getId(), saveGuestBookRequest))
+                .isInstanceOf(GuestBookLimitExceededException.class);
     }
 
     @Test
