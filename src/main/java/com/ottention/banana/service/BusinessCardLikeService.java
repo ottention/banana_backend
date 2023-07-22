@@ -7,6 +7,7 @@ import com.ottention.banana.entity.BusinessCardLike;
 import com.ottention.banana.entity.User;
 import com.ottention.banana.entity.notification.NotificationType;
 import com.ottention.banana.exception.BusinessCardNotFound;
+import com.ottention.banana.exception.DuplicationLikeException;
 import com.ottention.banana.exception.UserNotFound;
 import com.ottention.banana.exception.ZeroLikesError;
 import com.ottention.banana.repository.BusinessCardLikeRepository;
@@ -19,8 +20,6 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
-
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -31,7 +30,6 @@ public class BusinessCardLikeService {
     private final UserRepository userRepository;
     private final ApplicationEventPublisher eventPublisher;
 
-
     public BusinessCardLikeResponse like(Long userId, Long businessCardId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(UserNotFound::new);
@@ -39,15 +37,18 @@ public class BusinessCardLikeService {
         BusinessCard businessCard = businessCardRepository.findById(businessCardId)
                 .orElseThrow(BusinessCardNotFound::new);
 
-        Optional<BusinessCardLike> businessCardLike = businessCardLikeRepository.findByUserIdAndBusinessCardId(userId, businessCardId);
+        //사용자는 하나의 명함에 좋아요 한 번만 누를 수 있음
+        if (businessCardLikeRepository.existsByUserIdAndBusinessCardId(userId, businessCardId)) {
+            throw new DuplicationLikeException();
+        }
 
         BusinessCardLike like = BusinessCardLike.builder()
                 .user(user)
                 .businessCard(businessCard)
-                .like(businessCardLike)
                 .build();
 
         businessCardLikeRepository.save(like);
+
         //명함 좋아요 알림 전송
         notifyBusinessCardLikeInfo(like);
         return new BusinessCardLikeResponse(businessCard.getLikeCount(), true);
