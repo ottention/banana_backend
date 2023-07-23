@@ -3,11 +3,9 @@ package com.ottention.banana.service;
 import com.ottention.banana.dto.request.SaveBusinessCardRequest;
 import com.ottention.banana.dto.response.businesscard.BusinessCardIdResponse;
 import com.ottention.banana.dto.response.businesscard.BusinessCardResponse;
-import com.ottention.banana.dto.response.businesscard.BusinessCardSettingStatus;
 import com.ottention.banana.entity.*;
 import com.ottention.banana.exception.*;
 import com.ottention.banana.repository.BusinessCardRepository;
-import com.ottention.banana.repository.BusinessCardTagRepository;
 import com.ottention.banana.repository.GuestBookRepository;
 import com.ottention.banana.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -15,10 +13,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import static com.ottention.banana.AppConstant.*;
+import static com.ottention.banana.AppConstant.INITIAL_BUSINESS_CARD_COUNT;
+import static com.ottention.banana.AppConstant.MAX_BUSINESS_CARD_COUNT;
+import static java.util.stream.Collectors.toList;
 
 @Slf4j
 @Service
@@ -63,12 +62,8 @@ public class BusinessCardService {
 
     public List<BusinessCardIdResponse> getBusinessCardIds(Long userId) {
         List<BusinessCard> businessCards = businessCardRepository.findByUserId(userId);
-        List<BusinessCardIdResponse> businessCardIdResponses = new ArrayList<>();
-        for (BusinessCard businessCard : businessCards) {
-            BusinessCardIdResponse businessCardIdResponse = new BusinessCardIdResponse(businessCard.getId());
-            businessCardIdResponses.add(businessCardIdResponse);
-        }
-        return businessCardIdResponses;
+        return businessCards.stream().map(b -> new BusinessCardIdResponse(b.getId()))
+                .collect(toList());
     }
 
     @Transactional
@@ -125,22 +120,6 @@ public class BusinessCardService {
         linkService.saveLink(request, businessCard);
         tagService.saveTag(request.getTags(), businessCard);
         return businessCard;
-    }
-
-    //알림창 메시지 반환 메서드
-    public BusinessCardSettingStatus getSettingStatusMessage(Long userId) {
-        List<BusinessCard> businessCards = businessCardRepository.findByUserId(userId);
-        for (int businessCardNumber = 0; businessCardNumber < businessCards.size(); businessCardNumber++) {
-            if (businessCards.get(businessCardNumber).getIsRepresent()) {
-                String message = generateMessage(businessCardNumber + 1);
-                return new BusinessCardSettingStatus(message);
-            }
-        }
-        return new BusinessCardSettingStatus("");
-    }
-
-    private String generateMessage(int businessCardNumber) {
-        return String.format(MAIN_CARD_REGISTERED_MESSAGE, businessCardNumber);
     }
 
     public BusinessCardResponse getBusinessCard(Long userId, Long businessCardId) {

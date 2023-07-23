@@ -9,6 +9,7 @@ import java.util.Optional;
 
 public interface GuestBookRepository extends JpaRepository<GuestBook, Long> {
     List<GuestBook> findByUserId(Long userId, Pageable pageable);
+    List<GuestBook> findGuestBooksByBusinessCardIdAndUserId(Long businessCardId, Long userId);
     List<GuestBook> findGuestBooksByBusinessCardId(Long businessCardId, Pageable pageable);
     Optional<GuestBook> findByBusinessCardIdAndId(Long businessCardId, Long guestBookId);
     List<GuestBook> findAllByBusinessCardId(Long businessCardId);

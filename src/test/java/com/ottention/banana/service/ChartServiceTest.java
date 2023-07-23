@@ -7,14 +7,15 @@ import com.ottention.banana.entity.User;
 import com.ottention.banana.repository.BusinessCardLikeRepository;
 import com.ottention.banana.repository.BusinessCardRepository;
 import com.ottention.banana.repository.UserRepository;
+import com.ottention.banana.service.chart.ChartService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -60,11 +61,8 @@ class ChartServiceTest {
 
             businessCardRepository.save(businessCard);
 
-            Optional<BusinessCardLike> like = businessCardLikeRepository.findByUserIdAndBusinessCardId(user.getId(), businessCard.getId());
-
             BusinessCardLike businessCardLike = BusinessCardLike.builder()
                     .businessCard(businessCard)
-                    .like(like)
                     .user(user)
                     .build();
 
@@ -89,7 +87,8 @@ class ChartServiceTest {
         }
 
         //when
-        List<BusinessCardResponse> topTenBusinessCards = chartService.getTopTenBusinessCards("잇타", user.getId());
+        PageRequest pageRequest = PageRequest.of(0, 10);
+        List<BusinessCardResponse> topTenBusinessCards = chartService.getTopTenBusinessCards("잇타", user.getId(), pageRequest);
 
         //then
         assertThat(topTenBusinessCards.size()).isEqualTo(10);
