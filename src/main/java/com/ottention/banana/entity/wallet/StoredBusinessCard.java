@@ -41,9 +41,6 @@ public class StoredBusinessCard extends BaseEntity {
     @JoinColumn(name = "user_id")
     private User user;  //명함 저장한 사람
 
-    @OneToMany(mappedBy = "note_id", cascade = ALL)
-    private List<Note> notes = new ArrayList<>();
-
     public void modifyIsBookmarked(boolean isBookmarked) {
         this.isBookmarked = isBookmarked;
     }
