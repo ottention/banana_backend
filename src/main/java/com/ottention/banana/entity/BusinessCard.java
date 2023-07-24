@@ -27,10 +27,6 @@ public class BusinessCard extends BaseEntity {
     private String backTemplateColor;
     private int likeCount; //좋아요 수
 
-    @OneToOne
-    @JoinColumn(name = "qrcode_id")
-    private QRCode qrCode;
-
     @OneToMany(mappedBy = "businessCard", cascade = ALL)
     private List<BusinessCardContent> businessCardContents = new ArrayList<>();
 
@@ -48,10 +44,6 @@ public class BusinessCard extends BaseEntity {
         this.frontTemplateColor = frontTemplateColor;
         this.backTemplateColor = backTemplateColor;
         this.user = user;
-    }
-
-    public void createQrCode(QRCode qrCode) {
-        this.qrCode = qrCode;
     }
 
     public int updateLikeCount(int likeCount) {
