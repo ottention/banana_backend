@@ -1,7 +1,6 @@
 package com.ottention.banana;
 
 public final class AppConstant {
-    public static final String ADDRESS = "http://52.78.202.79:8080/businessCard/";
     public static final int INITIAL_BUSINESS_CARD_COUNT = 0;
     public static final int MAX_BUSINESS_CARD_COUNT = 3;
     public static final int MAX_GUEST_BOOK_COUNT = 4;
