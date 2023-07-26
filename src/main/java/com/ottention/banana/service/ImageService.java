@@ -22,15 +22,20 @@ public class ImageService {
 
     @Transactional
     public void saveImage(SaveBusinessCardRequest request, BusinessCard businessCard) {
-        List<ImageDto> frontImages = request.getFrontImages();
+        saveFrontImages(businessCard, request.getFrontImages());
+        saveBackImages(businessCard, request.getBackImages());
+    }
+
+    private void saveFrontImages(BusinessCard businessCard, List<ImageDto> frontImages) {
         for (ImageDto frontImage : frontImages) {
             log.info("imageUrl = {} ", frontImage.getImageUrl());
             log.info("isFront = {} ", frontImage.getIsFront());
             Image image = Image.createImage(frontImage.getImageUrl(), frontImage.getIsFront(), businessCard, frontImage.getCoordinate());
             imageRepository.save(image);
         }
+    }
 
-        List<ImageDto> backImages = request.getBackImages();
+    private void saveBackImages(BusinessCard businessCard, List<ImageDto> backImages) {
         for (ImageDto backImage : backImages) {
             log.info("imageUrl = {} ", backImage.getImageUrl());
             log.info("isFront = {} ", backImage.getIsFront());
