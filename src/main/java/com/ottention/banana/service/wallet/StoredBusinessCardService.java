@@ -1,6 +1,5 @@
 package com.ottention.banana.service.wallet;
 
-import com.ottention.banana.dto.response.businesscard.wallet.StoredCardDetailResponse;
 import com.ottention.banana.dto.response.businesscard.wallet.StoredCardPreviewResponse;
 import com.ottention.banana.entity.wallet.StoredBusinessCard;
 import com.ottention.banana.repository.wallet.StoredBusinessCardRepository;
@@ -53,4 +52,5 @@ public class StoredBusinessCardService {
                 .front(detailStoredCardService.findFrontStoredCardDetail(storedCard.getBusinessCard()))
                 .build();
     }
+
 }

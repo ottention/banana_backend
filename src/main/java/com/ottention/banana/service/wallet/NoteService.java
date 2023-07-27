@@ -18,6 +18,7 @@ import java.util.List;
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class NoteService {
+
     private final NoteRepository noteRepository;
     private final StoredBusinessCardRepository storedCardRepository;
     private final NoteMapper noteMapper;
@@ -41,4 +42,5 @@ public class NoteService {
         Note note = noteRepository.findById(noteId).orElseThrow(EntityNotFoundException::new);
         note.update(request.getContent());
     }
+
 }

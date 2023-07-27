@@ -24,6 +24,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 @Transactional
 public class NotificationService {
+
     private final NotificationRepository notificationRepository;
     private final EmitterRepository emitterRepository;
     private final SseMapper sseMapper;
@@ -108,5 +109,6 @@ public class NotificationService {
     public void deleteById(Long id) {
         notificationRepository.deleteById(id);
     }
+
 }
 

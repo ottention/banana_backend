@@ -20,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class DetailStoredBusinessCardService {
+
     private final StoredBusinessCardRepository storedCardRepository;
     private final BusinessCardContentService businessCardContentService;
     private final ImageService imageService;
@@ -59,10 +60,9 @@ public class DetailStoredBusinessCardService {
                 .build();
     }
 
-
-
     @Transactional
     public void delete(Long id) {
         storedCardRepository.deleteById(id);
     }
+
 }

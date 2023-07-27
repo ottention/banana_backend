@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 public class NotificationEventListener {
+
     private final NotificationService notificationService;
 
     @EventListener
@@ -18,4 +19,5 @@ public class NotificationEventListener {
         notificationService.send(event.getUser(), event.getContent(), event.getUrl(), event.getType());
         log.info(String.format("[ content: " + event.getContent() + ", receiver id : " + event.getUser().getId() + " ]"));
     }
+
 }

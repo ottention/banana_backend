@@ -25,6 +25,7 @@ import static org.springframework.data.domain.Sort.Direction.DESC;
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 @RequestMapping("/banana/wallet")
 public class WalletController {
+
     StoredBusinessCardService storedBusinessCardService;
     CategoryService categoryService;
 
