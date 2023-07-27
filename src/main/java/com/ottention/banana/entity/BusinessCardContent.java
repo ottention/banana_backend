@@ -16,7 +16,7 @@ import static lombok.AccessLevel.PROTECTED;
 public class BusinessCardContent extends BaseEntity {
 
     @Id @GeneratedValue(strategy = IDENTITY)
-    @Column(name = "content_id")
+    @Column(name = "business_card_content_id")
     private Long id;
 
     private String content;
