@@ -5,6 +5,7 @@ import com.ottention.banana.dto.response.businesscard.BusinessCardIdResponse;
 import com.ottention.banana.dto.response.businesscard.BusinessCardResponse;
 import com.ottention.banana.entity.*;
 import com.ottention.banana.exception.*;
+import com.ottention.banana.repository.BusinessCardLikeRepository;
 import com.ottention.banana.repository.BusinessCardRepository;
 import com.ottention.banana.repository.GuestBookRepository;
 import com.ottention.banana.repository.UserRepository;
@@ -29,6 +30,7 @@ public class BusinessCardService {
     private final BusinessCardRepository businessCardRepository;
     private final UserRepository userRepository;
     private final GuestBookRepository guestBookRepository;
+    private final BusinessCardLikeRepository businessCardLikeRepository;
     private final ImageService imageService;
     private final LinkService linkService;
     private final TagService tagService;
@@ -159,6 +161,9 @@ public class BusinessCardService {
 
         List<GuestBook> guestBooks = guestBookRepository.findAllByBusinessCardId(businessCardId);
         guestBookRepository.deleteAllInBatch(guestBooks);
+
+        List<BusinessCardLike> businessCardLikes = businessCardLikeRepository.findAllByBusinessCardId(businessCardId);
+        businessCardLikeRepository.deleteAllInBatch(businessCardLikes);
 
         deleteBusinessCardContents(businessCardId);
 
