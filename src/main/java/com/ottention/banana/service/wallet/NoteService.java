@@ -3,6 +3,7 @@ package com.ottention.banana.service.wallet;
 import com.ottention.banana.dto.request.SaveNoteRequest;
 import com.ottention.banana.dto.response.businesscard.NoteResponse;
 import com.ottention.banana.entity.wallet.Note;
+import com.ottention.banana.exception.InvalidRequest;
 import com.ottention.banana.mapper.NoteMapper;
 import com.ottention.banana.repository.wallet.NoteRepository;
 import com.ottention.banana.repository.wallet.StoredBusinessCardRepository;
@@ -34,12 +35,20 @@ public class NoteService {
     }
 
     @Transactional
-    public void delete(Long noteId) {
-        noteRepository.delete(noteRepository.findById(noteId).orElseThrow(EntityNotFoundException::new));
+    public void delete(Long id, Long noteId) {
+        Note note = noteRepository.findById(noteId)
+                .orElseThrow(EntityNotFoundException::new);
+
+        if (!note.getStoredBusinessCard().getId().equals(id)) {
+            throw new InvalidRequest();
+        }
+
+        noteRepository.delete(note);
     }
 
     public void update(Long noteId, SaveNoteRequest request) {
-        Note note = noteRepository.findById(noteId).orElseThrow(EntityNotFoundException::new);
+        Note note = noteRepository.findById(noteId)
+                .orElseThrow(EntityNotFoundException::new);
         note.update(request.getContent());
     }
 
