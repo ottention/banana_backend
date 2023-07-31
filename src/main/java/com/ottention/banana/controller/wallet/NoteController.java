@@ -49,7 +49,7 @@ public class NoteController {
     //노트 삭제
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping("/{id}/notes/{noteId}")
-    public void delete(@PathVariable Long noteId) {
-        noteService.delete(noteId);
+    public void delete(@PathVariable Long id, @PathVariable Long noteId) {
+        noteService.delete(id, noteId);
     }
 }
